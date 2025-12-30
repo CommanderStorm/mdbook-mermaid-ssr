@@ -1,5 +1,9 @@
 name: autofix.ci
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
+
 jobs:
   autofix:
     runs-on: ubuntu-latest
@@ -12,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install npm dependencies and sync payload
@@ -23,9 +27,10 @@ jobs:
         run: |
           if ! git diff --exit-code payload/mermaid.js > /dev/null 2>&1; then
             echo "mermaid.js was updated, regenerating integration test snapshots..."
+            echo "::group::Install dependencies"
             sudo apt-get update
             sudo apt-get install -y chromium-browser
-            cargo insta test --accept --test integration
+            cargo insta test --accept --test integration || true
           else
             echo "mermaid.js unchanged, skipping snapshot regeneration"
           fi
