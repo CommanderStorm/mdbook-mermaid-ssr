@@ -17,22 +17,28 @@ jobs:
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
           node-version: '24'
-          cache: 'npm'
 
-      - name: Install npm dependencies and sync payload
-        run: npm ci
-      - uses: taiki-e/install-action@mdbook
-      - uses: taiki-e/install-action@cargo-insta
-      - name: Update integration test snapshots if mermaid.js changed
+      - name: Update mermaid.js if nessesary
+        id: mermaid_check
         run: |
-          if ! git diff --exit-code payload/mermaid.js > /dev/null 2>&1; then
-            echo "mermaid.js was updated, regenerating integration test snapshots..."
-            echo "::group::Install dependencies"
-            sudo apt-get update
-            sudo apt-get install -y chromium-browser
-            cargo insta test --accept --test integration || true
+          HASH_BEFORE=$(sha256sum payload/mermaid.js 2>/dev/null || echo "none")
+          npm ci
+          HASH_AFTER=$(sha256sum payload/mermaid.js 2>/dev/null || echo "none")
+          if [ "$HASH_BEFORE" != "$HASH_AFTER" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
           else
-            echo "mermaid.js unchanged, skipping snapshot regeneration"
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
+
+      - uses: taiki-e/install-action@12a06cb21bb5f4b6f9dc82f1dc17737960f5365b # v2.65.9
+        if: steps.mermaid_check.outputs.changed == 'true'
+        with:
+          tool: mdbook,cargo-insta
+      - name: Update integration test snapshots
+        if: steps.mermaid_check.outputs.changed == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+          cargo insta test --accept --test integration
 
       - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27 # v1.3.2
