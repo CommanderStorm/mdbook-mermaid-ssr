@@ -22,10 +22,15 @@ jobs:
         run: |
           if ! git diff --exit-code payload/mermaid.js > /dev/null 2>&1; then
             echo "mermaid.js was updated, regenerating integration test snapshots..."
+            echo "::group::Install dependencies"
             sudo apt-get update
             sudo apt-get install -y chromium-browser
+
             cargo install cargo-binstall
             cargo binstall -y mdbook
+            cargo binstall -y cargo-insta
+            echo "::endgroup::"
+
             cargo insta test --accept --test integration || true
           else
             echo "mermaid.js unchanged, skipping snapshot regeneration"
