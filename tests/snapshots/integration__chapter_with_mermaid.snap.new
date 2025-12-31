@@ -1,0 +1,7 @@
+---
+source: tests/integration.rs
+assertion_line: 147
+expression: formatted.as_bytes().to_vec()
+extension: html
+snapshot_kind: binary
+---
