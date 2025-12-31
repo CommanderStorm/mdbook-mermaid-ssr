@@ -37,6 +37,8 @@ jobs:
           # Calculate padding to maintain column width of 7 characters (version column)
           VERSION_LEN=${#VERSION}
           PADDING_LEN=$((7 - VERSION_LEN))
+          # Ensure padding length is not negative to avoid printf issues
+          if [ "$PADDING_LEN" -lt 0 ]; then PADDING_LEN=0; fi
           PADDING=$(printf '%*s' "$PADDING_LEN" '')
           sed -i "s/| [0-9]\+\.[0-9]\+\.[0-9]\+ \+| :white_check_mark: |/| $VERSION$PADDING | :white_check_mark: |/" SECURITY.md
 
