@@ -88,6 +88,7 @@ jobs:
           tar: all
           zip: windows
           token: ${{ secrets.GITHUB_TOKEN }}
+          profile: dev
           dry-run: true
   # This final step is needed to mark the whole workflow as successful
   # Don't change its name - it is used by the merge protection rules
