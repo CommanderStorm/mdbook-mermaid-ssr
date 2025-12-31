@@ -1,6 +1,6 @@
 # mdbook-mermaid-ssr
 
-A preprocessor for [mdbook][https://github.com/rust-lang-nursery/mdBook] to add [mermaid.js][https://mermaidjs.github.io/] support.
+A preprocessor for [mdbook](https://github.com/rust-lang-nursery/mdBook) to add [mermaid.js](https://mermaidjs.github.io/) support.
 
 > [!IMPORTANT]
 > `mdbook-mermaid-ssr` provides server-side rendering for Mermaid diagrams in mdBook.
