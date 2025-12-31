@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0](https://github.com/CommanderStorm/mdbook-mermaid-ssr/compare/v0.0.7...v0.0.8) - 2025-12-31
+Due to a bug in our early release CI, v0.1.0 got published.
+This bumps our version to 0.2.0. Code wise, it is identical to 0.0.7, but not 0.1.0.
+DON'T use 0.1.0.
+
 ## [0.0.7](https://github.com/CommanderStorm/mdbook-mermaid-ssr/compare/v0.0.6...v0.0.7) - 2025-12-31
 
 This release contains
