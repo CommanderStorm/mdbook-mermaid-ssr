@@ -1,6 +1,0 @@
----
-source: tests/integration.rs
-expression: formatted.as_bytes().to_vec()
-extension: html
-snapshot_kind: binary
----
