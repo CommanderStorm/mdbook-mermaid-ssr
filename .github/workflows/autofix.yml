@@ -31,15 +31,15 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: install integration test depedencencys
+      - uses: taiki-e/install-action@12a06cb21bb5f4b6f9dc82f1dc17737960f5365b # v2.65.9
+        if: steps.mermaid_check.outputs.changed == 'true'
+        with:
+          tool: mdbook,cargo-insta
+      - name: install integration test browser depedencency
         if: steps.mermaid_check.outputs.changed == 'true'
         run: |
-            sudo apt-get update
-            sudo apt-get install -y chromium-browser
-
-            cargo install cargo-binstall
-            cargo binstall -y mdbook
-            cargo binstall -y cargo-insta
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
       - name: Update integration test snapshots
         if: steps.mermaid_check.outputs.changed == 'true'
         run: cargo insta test --accept --test integration || true
