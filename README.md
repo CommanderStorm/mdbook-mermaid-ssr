@@ -97,15 +97,12 @@ mdbook path/to/book
 
 ### Update the bundled mermaid.js
 
-Find the latest version of `mermaid` on <https://github.com/mermaid-js/mermaid/releases>.
-Then run:
+The `mermaid.js` payload is managed via npm and automatically updated by Dependabot.
 
-```
-cargo xtask <version>
-```
+Dependabot will automatically create PRs when new versions of mermaid are released.
+The autofix.ci bot will automatically sync the payload file when the PR is created.
 
-This will fetch the minified mermaid.js file and commit it to the `payload/` directory for SSR rendering.
-
+For local development, you can manually sync the payload by running `npm install` in the directory containing the npm configuration for the bundled `mermaid.js`.
 ### Testing
 
 Run the test suite:
@@ -140,41 +137,6 @@ This is a trade-off for the benefits of pre-rendered SVG output.
 
 We have not currently explored parallelization or caching strategies to optimize build times.
 
-## Migration from mdbook-mermaid
-
-If you're migrating from the original `mdbook-mermaid` (client-side rendering):
-
-1. Install `mdbook-mermaid-ssr`:
-   ```bash
-   cargo install mdbook-mermaid-ssr
-   ```
-
-2. Update your `book.toml`:
-   ```toml
-   [preprocessor.mermaid-ssr]
-   ```
-
-3. Remove client-side JavaScript configuration:
-   ```toml
-   # Remove these lines if present:
-   [output.html]
-   additional-js = ["mermaid.min.js", "mermaid-init.js"]
-   ```
-
-4. Delete old JavaScript files from your book directory:
-   ```bash
-   rm -f mermaid.min.js mermaid-init.js
-   ```
-
-5. Ensure Chrome/Chromium is installed on your build system
-
-6. Rebuild your book:
-   ```bash
-   mdbook build
-   ```
-
-See [MIGRATION.md](MIGRATION.md) for detailed migration instructions.
-
 ## License
 
 MPL. See [LICENSE](LICENSE).  
@@ -183,4 +145,4 @@ Copyright (c) 2018-2024 Jan-Erik Rediger <janerik@fnordig.de>
 This is a fork focusing on server-side rendering only.
 
 Mermaid is [MIT licensed](https://github.com/knsv/mermaid/blob/master/LICENSE).
-The bundled assets (`payload/mermaid.min.js`) are MIT licensed.
+The bundled assets (`payload/mermaid.js`) are MIT licensed.
