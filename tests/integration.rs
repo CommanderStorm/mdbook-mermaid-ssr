@@ -148,7 +148,7 @@ fn test_chapter_with_mermaid() {
         .expect("Failed to find </main> tag");
 
     let formatted = format_html(content);
-    insta::assert_snapshot!("chapter_with_mermaid",formatted);
+    insta::assert_snapshot!("chapter_with_mermaid", formatted);
 }
 
 #[test]
