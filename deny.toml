@@ -24,7 +24,7 @@ exceptions = [
   # this is a real issue.
   # https://github.com/mdrokz/auto_generate_cdp/issues/16
   # https://github.com/rust-headless-chrome/rust-headless-chrome/issues/511
-  {crate="auto_generate_cdp", allow=["GPL-3.0-or-later"]},
+  {crate="auto_generate_cdp", allow=["GPL-3.0-only"]},
 ]
 
 [licenses.private]
