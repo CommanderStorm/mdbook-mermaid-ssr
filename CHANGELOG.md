@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.6](https://github.com/CommanderStorm/mdbook-mermaid-ssr/compare/v0.0.5...v0.0.6) - 2025-12-31
+
+### Added
+
+- security workflow configuration ([#22](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/22))
+
 ## [0.0.5](https://github.com/CommanderStorm/mdbook-mermaid-ssr/compare/v0.0.4...v0.0.5) - 2025-12-31
 
 Moved the binary uploading to a cd step ([#21](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/21))
