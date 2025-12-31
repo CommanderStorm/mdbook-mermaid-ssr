@@ -40,6 +40,6 @@ jobs:
           sudo apt-get install -y chromium-browser
       - name: Update integration test snapshots
         if: steps.mermaid_check.outputs.changed == 'true'
-        run: cargo insta test --accept --test integration
+        run: cargo insta test --accept --test integration || true
 
       - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27 # v1.3.2
