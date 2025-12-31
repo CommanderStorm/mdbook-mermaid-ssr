@@ -18,6 +18,42 @@ fn output_dir() -> PathBuf {
         .join("test-book")
 }
 
+/// Format HTML with proper indentation for better readability in snapshots
+fn format_html(html: &str) -> String {
+    // Try to format with oxfmt if available
+    let result = Command::new("npx")
+        .arg("oxfmt@latest")
+        .arg("--stdin-filepath")
+        .arg("snapshot.html")
+        .stdin(std::process::Stdio::piped())
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn();
+
+    match result {
+        Ok(mut child) => {
+            use std::io::Write;
+            if let Some(mut stdin) = child.stdin.take() {
+                let _ = stdin.write_all(html.as_bytes());
+            }
+
+            match child.wait_with_output() {
+                Ok(output) if output.status.success() => {
+                    String::from_utf8_lossy(&output.stdout).to_string()
+                }
+                _ => {
+                    eprintln!("Warning: oxfmt formatting failed, using original HTML");
+                    html.to_string()
+                }
+            }
+        }
+        Err(_) => {
+            eprintln!("Warning: oxfmt not available, using original HTML");
+            html.to_string()
+        }
+    }
+}
+
 fn ensure_built() {
     BUILD_ONCE.call_once(|| {
         // First, build the mdbook-mermaid-ssr binary
@@ -106,8 +142,9 @@ fn test_chapter_with_mermaid() {
         .unwrap()
         .replace_all(&content, r#"<script src="toc-REDACTED.js">"#);
 
-    // Snapshot the HTML content
-    insta::assert_snapshot!("chapter_with_mermaid_html", content);
+    // Format and snapshot the HTML content for better readability
+    let formatted = format_html(&content);
+    insta::assert_snapshot!("chapter_with_mermaid.html", formatted);
 }
 
 #[test]
@@ -128,9 +165,12 @@ fn test_chapter_without_mermaid() {
     // Should preserve code blocks
     assert!(content.contains("rust"), "Should preserve rust code blocks");
 
-    // Snapshot the HTML content
+    // Redact non-deterministic content before snapshotting
     let content = regex::Regex::new(r#"<script src="toc-.+\.js">"#)
         .unwrap()
         .replace_all(&content, r#"<script src="toc-REDACTED.js">"#);
-    insta::assert_snapshot!("chapter_without_mermaid_html", content);
+
+    // Format and snapshot the HTML content for better readability
+    let formatted = format_html(&content);
+    insta::assert_snapshot!("chapter_without_mermaid.html", formatted);
 }
