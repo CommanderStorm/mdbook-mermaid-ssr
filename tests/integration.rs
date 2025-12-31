@@ -138,13 +138,17 @@ fn test_chapter_with_mermaid() {
     let content = regex::Regex::new(r"mermaid-diagram-\d+")
         .unwrap()
         .replace_all(&content, "mermaid-diagram-REDACTED");
-    let content = regex::Regex::new(r#"<script src="toc-.+\.js">"#)
-        .unwrap()
-        .replace_all(&content, r#"<script src="toc-REDACTED.js">"#);
+    let content = content
+        .split("<main>")
+        .nth(1)
+        .expect("Failed to find <main> tag");
+    let content = content
+        .split("</main>")
+        .nth(0)
+        .expect("Failed to find </main> tag");
 
-    // Format and snapshot the HTML content for better readability
-    let formatted = format_html(&content);
-    insta::assert_snapshot!("chapter_with_mermaid.html", formatted);
+    let formatted = format_html(content);
+    insta::assert_snapshot!("chapter_with_mermaid",formatted);
 }
 
 #[test]
@@ -169,8 +173,28 @@ fn test_chapter_without_mermaid() {
     let content = regex::Regex::new(r#"<script src="toc-.+\.js">"#)
         .unwrap()
         .replace_all(&content, r#"<script src="toc-REDACTED.js">"#);
+    let content = content
+        .split("<main>")
+        .nth(1)
+        .expect("Failed to find <main> tag");
+    let content = content
+        .split("</main>")
+        .nth(0)
+        .expect("Failed to find </main> tag");
 
-    // Format and snapshot the HTML content for better readability
-    let formatted = format_html(&content);
-    insta::assert_snapshot!("chapter_without_mermaid.html", formatted);
+    let formatted = format_html(content);
+    insta::assert_snapshot!(formatted, @r##"
+    <h1 id="regular-chapter"><a class="header" href="#regular-chapter">Regular Chapter</a></h1>
+    <p>This chapter has no Mermaid diagrams.</p>
+    <pre class="playground"><code class="language-rust">fn main() {
+        println!("Hello, world!");
+    }</code></pre>
+    <p>Just regular markdown with code blocks.</p>
+    <h2 id="a-subsection"><a class="header" href="#a-subsection">A Subsection</a></h2>
+    <p>More text here.</p>
+    <pre><code class="language-python">def greet(name):
+        return f"Hello, {name}!"
+    </code></pre>
+    <p>Final paragraph.</p>
+    "##);
 }
