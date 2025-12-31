@@ -12,7 +12,7 @@ updates:
         patterns:
           - "*"
     commit-message:
-      prefix: "chore(deps)"
+      prefix: "chore"
       include: "scope"
 
   # Enable version updates for Cargo
@@ -27,7 +27,7 @@ updates:
         patterns:
           - "*"
     commit-message:
-      prefix: "chore(deps)"
+      prefix: "chore"
       include: "scope"
 
   # Enable version updates for GitHub Actions
