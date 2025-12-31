@@ -33,6 +33,11 @@ jobs:
         if: steps.mermaid_check.outputs.changed == 'true'
         with:
           tool: mdbook,cargo-insta
+      - name: install integration test browser depedencency
+        if: steps.mermaid_check.outputs.changed == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
       - name: Update integration test snapshots
         if: steps.mermaid_check.outputs.changed == 'true'
         run: cargo insta test --accept --test integration
