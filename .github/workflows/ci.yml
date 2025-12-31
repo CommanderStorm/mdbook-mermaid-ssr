@@ -200,7 +200,9 @@ jobs:
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           files: artifacts/**/*
-          tag_name: ${{ steps.release.outputs.tag }}
+          tag_name: ${{ steps.release.outputs.releases[0].tag }}
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_PLZ_TOKEN }}
       - if: ${{ steps.release.outputs.releases_created == 'false' }}
