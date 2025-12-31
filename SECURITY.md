@@ -56,7 +56,7 @@ This project depends on several crates and the bundled Mermaid.js library:
 
 1. **Rust Dependencies**: Managed via Cargo and regularly updated
 2. **Mermaid.js**: Automatically updated via Dependabot when new versions are released
-3. **Supply Chain**: We use `cargo-deny` (see `deny.toml`) to check for known vulnerabilities in dependencies
+3. **Supply Chain**: We use `cargo-deny` (see `deny.toml`) for dependency policy enforcement (e.g., allowed licenses, banned crates, and sources), and `cargo-audit` to check for known vulnerabilities in Rust dependencies
 
 Users can audit dependencies by running:
 ```bash
