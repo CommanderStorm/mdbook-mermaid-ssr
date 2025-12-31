@@ -9,9 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.0.3](https://github.com/CommanderStorm/mdbook-mermaid-ssr/compare/v0.0.2...v0.0.3) - 2025-12-31
 
-### Other
-
-- remove some parts which are not good snapshots ([#11](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/11))
+this release is only done to test if our release management can now publish binaries correctly
 
 ## [0.0.2](https://github.com/CommanderStorm/mdbook-mermaid-ssr/compare/v0.0.1...v0.0.2) - 2025-12-31
 
