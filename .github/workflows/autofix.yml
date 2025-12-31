@@ -35,9 +35,6 @@ jobs:
           tool: mdbook,cargo-insta
       - name: Update integration test snapshots
         if: steps.mermaid_check.outputs.changed == 'true'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser
-          cargo insta test --accept --test integration
+        run: cargo insta test --accept --test integration
 
       - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27 # v1.3.2
