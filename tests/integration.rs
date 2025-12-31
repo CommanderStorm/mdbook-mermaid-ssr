@@ -172,8 +172,5 @@ fn test_chapter_without_mermaid() {
 
     // Format and snapshot the HTML content for better readability
     let formatted = format_html(&content);
-    insta::assert_snapshot!(
-        "chapter_without_mermaid.html",
-        formatted
-    );
+    insta::assert_snapshot!("chapter_without_mermaid.html", formatted);
 }
