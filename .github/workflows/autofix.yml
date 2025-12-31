@@ -34,7 +34,13 @@ jobs:
       - name: Sync version from Cargo.toml to SECURITY.md
         run: |
           VERSION=$(grep '^version = ' Cargo.toml | head -n1 | cut -d'"' -f2)
-          sed -i "s/| [0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*[[:space:]]*| :white_check_mark: |/| $VERSION   | :white_check_mark: |/" SECURITY.md
+          # Calculate padding to maintain column width of 7 characters (version column)
+          VERSION_LEN=${#VERSION}
+          PADDING_LEN=$((7 - VERSION_LEN))
+          # Ensure padding length is not negative to avoid printf issues
+          if [ "$PADDING_LEN" -lt 0 ]; then PADDING_LEN=0; fi
+          PADDING=$(printf '%*s' "$PADDING_LEN" '')
+          sed -i "s/| [0-9]\+\.[0-9]\+\.[0-9]\+ \+| :white_check_mark: |/| $VERSION$PADDING | :white_check_mark: |/" SECURITY.md
 
       - uses: taiki-e/install-action@e0db384ad69f5ba2c6dd0129d8934e0d0ba465c1 # v2.65.10
         if: steps.mermaid_check.outputs.changed == 'true'
