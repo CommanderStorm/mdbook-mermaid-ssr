@@ -180,7 +180,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          tag="${{ steps.release.outputs.tag }}"
+          tag="${{ steps.release.outputs.releases[0].tag }}"
           cd artifacts
           for dir in */; do
             # Skip if no directories found
