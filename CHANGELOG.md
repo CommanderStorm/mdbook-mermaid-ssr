@@ -9,20 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.0.7](https://github.com/CommanderStorm/mdbook-mermaid-ssr/compare/v0.0.6...v0.0.7) - 2025-12-31
 
-### Fixed
+This release contains
 
-- *(ci)* formatting of spaces after the version in security policy ([#28](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/28))
-
-### Other
-
-- [StepSecurity] ci: Harden GitHub Actions ([#33](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/33))
-- chore(ci)(deps): bump github/codeql-action from 3.31.7 to 4.31.9 ([#32](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/32))
-- *(ci)* Ci hardening ([#31](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/31))
-- *(release)* Relax when the cd action is being run ([#29](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/29))
+- signinficant improvements towards our suppy chain security ([#28](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/28)) ([#31](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/31)) ([#27](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/27)) ([#26](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/26))
+- another experiment how to get us to produce better binaries in releses ([#29](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/29))
 - *(ci)* faster ci by only building in debug mode ([#30](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/30))
 - *(deps)* bump mermaid from 11.4.1 to 11.12.2 in the npm-dependencies group ([#9](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/9))
-- add a security policy ([#27](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/27))
-- pin more dependencys ([#26](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/26))
 
 ## [0.0.6](https://github.com/CommanderStorm/mdbook-mermaid-ssr/compare/v0.0.5...v0.0.6) - 2025-12-31
 
