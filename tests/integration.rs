@@ -135,9 +135,6 @@ fn test_chapter_with_mermaid() {
     );
 
     // Redact non-deterministic mermaid diagram IDs before snapshotting
-    let content = regex::Regex::new(r"mermaid-diagram-\d+")
-        .unwrap()
-        .replace_all(&content, "mermaid-diagram-REDACTED");
     let content = content
         .split("<main>")
         .nth(1)
@@ -170,9 +167,6 @@ fn test_chapter_without_mermaid() {
     assert!(content.contains("rust"), "Should preserve rust code blocks");
 
     // Redact non-deterministic content before snapshotting
-    let content = regex::Regex::new(r#"<script src="toc-.+\.js">"#)
-        .unwrap()
-        .replace_all(&content, r#"<script src="toc-REDACTED.js">"#);
     let content = content
         .split("<main>")
         .nth(1)

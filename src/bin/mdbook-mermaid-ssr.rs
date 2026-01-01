@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use mdbook_mermaid_ssr::Mermaid;
+use mdbook_mermaid_ssr::{Mermaid, config::Config};
 use mdbook_preprocessor::Preprocessor;
 use mdbook_preprocessor::errors::Error;
 
@@ -53,7 +53,8 @@ fn handle_preprocessing() -> Result<(), Error> {
         );
     }
 
-    let preprocessor = Mermaid::new()
+    let config = Config::from_context(&ctx);
+    let preprocessor = Mermaid::new(config)
         .map_err(|e| Error::msg(format!("Failed to initialize mermaid preprocessor: {}", e)))?;
     let processed_book = preprocessor.run(&ctx, book)?;
     serde_json::to_writer(io::stdout(), &processed_book)?;
@@ -62,7 +63,8 @@ fn handle_preprocessing() -> Result<(), Error> {
 }
 
 fn handle_supports(renderer: &str) -> ! {
-    let preprocessor = match Mermaid::new() {
+    // For the supports check, we don't need to parse config, just check if we can initialize
+    let preprocessor = match Mermaid::new(Config::default()) {
         Ok(p) => p,
         Err(_) => {
             // If we can't initialize, we can't support any renderer

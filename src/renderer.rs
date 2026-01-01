@@ -7,6 +7,8 @@ use headless_chrome::{Browser, LaunchOptions, Tab};
 use serde_json::Value;
 use unescape::unescape;
 
+use crate::config::Config;
+
 /// Default timeout for Chrome operations (30 seconds)
 pub const DEFAULT_TIMEOUT_SECS: Duration = Duration::from_secs(30);
 
@@ -21,60 +23,45 @@ pub struct Mermaid {
 impl Mermaid {
     /// Initializes Mermaid with default timeout settings
     pub fn try_init() -> Result<Self> {
-        Self::try_init_with_timeout(DEFAULT_TIMEOUT_SECS)
+        Self::try_init_with_config(&Config::default())
     }
 
-    /// Initializes Mermaid with custom timeout
+    /// Initializes Mermaid with a configuration object
     ///
     /// # Arguments
-    /// * `timeout` - Maximum duration for Chrome operations (navigation, evaluation, etc.)
+    /// * `config` - Configuration for the renderer
     ///
     /// # Example:
     /// ```no_run
     /// # use mdbook_mermaid_ssr::renderer::Mermaid;
-    /// # use std::time::Duration;
-    /// let mermaid = Mermaid::try_init_with_timeout(Duration::from_secs(60))
+    /// # use mdbook_mermaid_ssr::config::Config;
+    /// let config = Config::default();
+    /// let mermaid = Mermaid::try_init_with_config(&config)
     ///     .expect("Failed to initialize");
     /// ```
-    pub fn try_init_with_timeout(timeout: Duration) -> Result<Self> {
-        // Configure browser with timeout settings
-        let launch_options = LaunchOptions::default_builder()
-            .idle_browser_timeout(timeout)
-            .build()?;
+    pub fn try_init_with_config(config: &Config) -> Result<Self> {
+        // Configure browser with timeout settings and optional custom chrome path
+        let mut launch_options_builder = LaunchOptions::default_builder();
+        launch_options_builder.idle_browser_timeout(config.timeout);
+
+        if let Some(ref chrome_path) = config.chrome_path {
+            launch_options_builder.path(Some(chrome_path.into()));
+        }
+
+        let launch_options = launch_options_builder.build()?;
 
         let browser = Browser::new(launch_options)?;
         let mermaid_js = include_str!("../payload/mermaid.js");
         let html_payload = include_str!("../payload/index.html");
 
         let tab = browser.new_tab()?;
-
-        // Set default timeout for tab operations
-        tab.set_default_timeout(timeout);
-
+        tab.set_default_timeout(config.timeout);
         tab.navigate_to(&format!("data:text/html;charset=utf-8,{}", html_payload))?;
-
         // Load mermaid library
         tab.evaluate(mermaid_js, false)?;
-
-        // Initialize mermaid and set up render function in global scope
-        let init_script = r#"
-                mermaid.initialize({
-                    startOnLoad: false,
-                    theme: 'default',
-                    securityLevel: 'loose'
-                });
-
-                window.render = async function(code) {
-                    try {
-                        const { svg } = await mermaid.render('mermaid-diagram-' + Date.now(), code);
-                        return svg;
-                    } catch (error) {
-                        console.error('Mermaid rendering error:', error);
-                        return null;
-                    }
-                };
-            "#;
-        tab.evaluate(init_script, false)?;
+        // Initialize mermaid with configured options and set up render function
+        let init_script = config.build_mermaid_init_script();
+        tab.evaluate(&init_script, false)?;
 
         Ok(Self {
             _browser: browser,
@@ -91,9 +78,10 @@ impl Mermaid {
     /// let svg = mermaid.render("graph TB\na-->b").expect("Unable to render!");
     /// ```
     pub fn render(&self, input: &str) -> Result<String> {
+        let id = gxhash::gxhash32(input.as_bytes(), 0);
         // Call the async render function and await its result
         let script = format!(
-            "(async () => {{ return await window.render('{}'); }})()",
+            "(async () => {{ return await window.render('mermaid-diagram-{id}', '{}'); }})()",
             escape(input)
         );
         let data = self.tab.evaluate(&script, true)?;
@@ -122,6 +110,8 @@ impl Mermaid {
 
 #[cfg(test)]
 mod tests {
+    use crate::config::SecurityLevel;
+
     use super::*;
 
     #[test]
@@ -154,9 +144,10 @@ mod tests {
     }
 
     #[test]
-    fn test_custom_timeout() {
-        use std::time::Duration;
-        let mermaid = Mermaid::try_init_with_timeout(Duration::from_secs(60));
+    fn test_with_config() {
+        let mut config = Config::default();
+        config.mermaid.security_level = SecurityLevel::Strict;
+        let mermaid = Mermaid::try_init_with_config(&config);
         assert!(mermaid.is_ok());
     }
 }

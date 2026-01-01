@@ -2,10 +2,12 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+pub mod config;
 pub mod renderer;
 
 use anyhow::Context;
-use mdbook_preprocessor::book::{Book, BookItem, Chapter};
+use config::{Config, ErrorHandling};
+use mdbook_preprocessor::book::{Book, BookItem};
 use mdbook_preprocessor::errors::Result;
 use mdbook_preprocessor::{Preprocessor, PreprocessorContext};
 use pulldown_cmark::{CodeBlockKind::*, Event, Options, Parser, Tag, TagEnd};
@@ -13,14 +15,16 @@ use std::sync::Arc;
 
 pub struct Mermaid {
     renderer: Arc<renderer::Mermaid>,
+    config: Config,
 }
 
 impl Mermaid {
-    pub fn new() -> Result<Self> {
-        let renderer = renderer::Mermaid::try_init()
+    pub fn new(config: Config) -> Result<Self> {
+        let renderer = renderer::Mermaid::try_init_with_config(&config)
             .context("Failed to initialize SSR renderer. Chrome/Chromium must be installed.")?;
         Ok(Self {
             renderer: Arc::new(renderer),
+            config,
         })
     }
 }
@@ -40,9 +44,11 @@ impl Preprocessor for Mermaid {
             }
 
             if let BookItem::Chapter(ref mut chapter) = *item {
-                res = Some(Self::add_mermaid(chapter, &self.renderer).map(|md| {
-                    chapter.content = md;
-                }));
+                res = Some(
+                    add_mermaid(&chapter.content, &self.renderer, &self.config).map(|md| {
+                        chapter.content = md;
+                    }),
+                );
             }
         });
 
@@ -54,7 +60,11 @@ impl Preprocessor for Mermaid {
     }
 }
 
-fn add_mermaid(content: &str, renderer: &Arc<renderer::Mermaid>) -> Result<String> {
+fn add_mermaid(
+    content: &str,
+    renderer: &Arc<renderer::Mermaid>,
+    config: &Config,
+) -> Result<String> {
     let mut mermaid_content = String::new();
     let mut in_mermaid_block = false;
 
@@ -114,11 +124,20 @@ fn add_mermaid(content: &str, renderer: &Arc<renderer::Mermaid>) -> Result<Strin
                         e,
                         mermaid_content
                     );
-                    // Return error as comment in HTML
-                    format!(
-                        "<!-- Mermaid rendering error: {} -->\n<pre class=\"mermaid-error\">Error rendering diagram</pre>\n\n",
-                        e
-                    )
+
+                    // Handle error based on configuration
+                    match config.on_error {
+                        ErrorHandling::Fail => {
+                            return Err(e.into());
+                        }
+                        ErrorHandling::Comment => {
+                            // Return error as comment in HTML
+                            format!(
+                                "<!-- Mermaid rendering error: {} -->\n<pre class=\"mermaid-error\">Error rendering diagram</pre>\n\n",
+                                e
+                            )
+                        }
+                    }
                 }
             };
 
@@ -136,22 +155,18 @@ fn add_mermaid(content: &str, renderer: &Arc<renderer::Mermaid>) -> Result<Strin
     Ok(content)
 }
 
-impl Mermaid {
-    fn add_mermaid(chapter: &mut Chapter, renderer: &Arc<renderer::Mermaid>) -> Result<String> {
-        add_mermaid(&chapter.content, renderer)
-    }
-}
-
 #[cfg(test)]
 mod test {
     use pretty_assertions::assert_eq;
     use std::sync::Arc;
 
     use super::{add_mermaid, renderer};
+    use crate::config::Config;
 
     #[test]
     fn adds_mermaid() {
         let mermaid = renderer::Mermaid::try_init().unwrap();
+        let config = Config::default();
         let content = r#"# Chapter
 
 ```mermaid
@@ -162,7 +177,7 @@ A --> B
 Text
 "#;
 
-        let result = add_mermaid(content, &Arc::new(mermaid)).unwrap();
+        let result = add_mermaid(content, &Arc::new(mermaid), &config).unwrap();
 
         // Check that SVG was generated
         assert!(result.contains("<svg"));
@@ -176,6 +191,7 @@ Text
         // Regression test.
         // Previously we forgot to enable the same markdwon extensions as mdbook itself.
         let mermaid = renderer::Mermaid::try_init().unwrap();
+        let config = Config::default();
 
         let content = r#"# Heading
 
@@ -191,7 +207,10 @@ Text
 | Row 1  | Row 2  |
 "#;
 
-        assert_eq!(expected, add_mermaid(content, &Arc::new(mermaid)).unwrap());
+        assert_eq!(
+            expected,
+            add_mermaid(content, &Arc::new(mermaid), &config).unwrap()
+        );
     }
 
     #[test]
@@ -199,6 +218,7 @@ Text
         // Regression test.
         // Don't remove important newlines for syntax nested inside HTML
         let mermaid = renderer::Mermaid::try_init().unwrap();
+        let config = Config::default();
 
         let content = r#"# Heading
 
@@ -218,7 +238,10 @@ Text
 </del>
 "#;
 
-        assert_eq!(expected, add_mermaid(content, &Arc::new(mermaid)).unwrap());
+        assert_eq!(
+            expected,
+            add_mermaid(content, &Arc::new(mermaid), &config).unwrap()
+        );
     }
 
     #[test]
@@ -226,6 +249,7 @@ Text
         // Regression test.
         // Don't remove important newlines for syntax nested inside HTML
         let mermaid = renderer::Mermaid::try_init().unwrap();
+        let config = Config::default();
 
         let content = r#"# Heading
 
@@ -245,13 +269,17 @@ Text
 2. paragraph 2
 "#;
 
-        assert_eq!(expected, add_mermaid(content, &Arc::new(mermaid)).unwrap());
+        assert_eq!(
+            expected,
+            add_mermaid(content, &Arc::new(mermaid), &config).unwrap()
+        );
     }
 
     #[test]
     fn escape_in_mermaid_block() {
         let _ = env_logger::try_init();
         let mermaid = renderer::Mermaid::try_init().unwrap();
+        let config = Config::default();
         let content = r#"
 ```mermaid
 classDiagram
@@ -264,7 +292,7 @@ classDiagram
 hello
 "#;
 
-        let result = add_mermaid(content, &Arc::new(mermaid)).unwrap();
+        let result = add_mermaid(content, &Arc::new(mermaid), &config).unwrap();
 
         // Check that SVG was generated and contains the interface markers
         assert!(result.contains("<svg"));
@@ -276,6 +304,7 @@ hello
     fn more_backticks() {
         let _ = env_logger::try_init();
         let mermaid = renderer::Mermaid::try_init().unwrap();
+        let config = Config::default();
         let content = r#"# Chapter
 
 ````mermaid
@@ -286,7 +315,7 @@ A --> B
 Text
 "#;
 
-        let result = add_mermaid(content, &Arc::new(mermaid)).unwrap();
+        let result = add_mermaid(content, &Arc::new(mermaid), &config).unwrap();
 
         // Check that SVG was generated
         assert!(result.contains("<svg"));
@@ -299,12 +328,58 @@ Text
     fn crlf_line_endings() {
         let _ = env_logger::try_init();
         let mermaid = renderer::Mermaid::try_init().unwrap();
+        let config = Config::default();
         let content = "# Chapter\r\n\r\n````mermaid\r\n\r\ngraph TD\r\nA --> B\r\n````";
 
-        let result = add_mermaid(content, &Arc::new(mermaid)).unwrap();
+        let result = add_mermaid(content, &Arc::new(mermaid), &config).unwrap();
 
         // Check that SVG was generated
         assert!(result.contains("<svg"));
         assert!(result.contains("</svg>"));
+    }
+
+    #[test]
+    fn test_on_error_fail() {
+        let _ = env_logger::try_init();
+        let mermaid = renderer::Mermaid::try_init().unwrap();
+        let mut config = Config::default();
+        config.on_error = crate::config::ErrorHandling::Fail;
+
+        let content = r#"
+```mermaid
+grph TD
+A --> B
+```
+"#;
+
+        let result = add_mermaid(content, &Arc::new(mermaid), &config);
+        assert!(
+            result.is_err(),
+            "Expected error when on_error is set to fail"
+        );
+    }
+
+    #[test]
+    fn test_on_error_comment() {
+        let _ = env_logger::try_init();
+        let mermaid = renderer::Mermaid::try_init().unwrap();
+        let mut config = Config::default();
+        config.on_error = crate::config::ErrorHandling::Comment;
+
+        let content = r#"
+```mermaid
+grph TD
+A --> B
+```
+"#;
+
+        let result = add_mermaid(content, &Arc::new(mermaid), &config);
+        assert!(
+            result.is_ok(),
+            "Expected success when on_error is set to comment"
+        );
+        let output = result.unwrap();
+        assert!(output.contains("<!-- Mermaid rendering error:"));
+        assert!(output.contains("mermaid-error"));
     }
 }

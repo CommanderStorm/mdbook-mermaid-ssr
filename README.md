@@ -80,6 +80,31 @@ Add the following to your `book.toml`:
 
 That's it! No JavaScript files or additional configuration needed. Diagrams are pre-rendered to SVG during the build process.
 
+## Configuration
+
+`mdbook-mermaid-ssr` supports various configuration options in your `book.toml`:
+
+```toml
+[preprocessor.mermaid-ssr]
+# Timeout for rendering operations (default: 30s)
+timeout = 30s
+
+# Error handling: "fail" or "comment" (default: "comment")
+# - "fail": Build fails on rendering errors
+# - "comment": Errors are emitted as HTML comments
+on-error = "comment"
+
+# Custom path to Chrome/Chromium executable (optional)
+chrome-path = "/usr/bin/chromium"
+
+# We also support all of mermaid.js options (but kebab-case instead of camelCase), such as:
+# - `theme` with options: "default" (default), "base", "dark", "forest", "neutral"
+# - `look` with options: "classic" (default), "handDrawn"
+# - `security-level` with options: "strict" (default), "loose", "antiscript", "sandbox"
+# - `font-family`
+# - ... please see https://mermaid.js.org/config/schema-docs/config for a full list
+```
+
 Finally, build your book:
 
 ```
