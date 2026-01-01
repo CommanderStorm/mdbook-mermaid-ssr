@@ -21,29 +21,28 @@ impl Mermaid {
         let html_payload = include_str!("../payload/index.html");
 
         let tab = browser.new_tab()?;
-        tab.navigate_to(&format!("data:text/html;charset=utf-8,{}", html_payload))?;
+        tab.navigate_to(&format!("data:text/html;charset=utf-8,{html_payload}"))?;
 
         // Load mermaid library
         tab.evaluate(mermaid_js, false)?;
 
         // Initialize mermaid and set up render function in global scope
-        let init_script = r#"
-            mermaid.initialize({
-                startOnLoad: false,
-                theme: 'default',
-                securityLevel: 'loose'
-            });
+        let init_script = r"mermaid.initialize({
+    startOnLoad: false,
+    theme: 'default',
+    securityLevel: 'loose'
+});
 
-            window.render = async function(code) {
-                try {
-                    const { svg } = await mermaid.render('mermaid-diagram-' + Date.now(), code);
-                    return svg;
-                } catch (error) {
-                    console.error('Mermaid rendering error:', error);
-                    return null;
-                }
-            };
-        "#;
+window.render = async function(code) {
+    try {
+        const { svg } = await mermaid.render('mermaid-diagram-' + Date.now(), code);
+        return svg;
+    } catch (error) {
+        console.error('Mermaid rendering error:', error);
+        return null;
+    }
+};
+";
         tab.evaluate(init_script, false)?;
 
         Ok(Self {
@@ -74,7 +73,7 @@ impl Mermaid {
             bail!("Failed to compile Mermaid diagram");
         }
 
-        Ok(slice.to_string())
+        Ok(slice.clone())
     }
 }
 

@@ -8,7 +8,7 @@ use anyhow::Context;
 use mdbook_preprocessor::book::{Book, BookItem, Chapter};
 use mdbook_preprocessor::errors::Result;
 use mdbook_preprocessor::{Preprocessor, PreprocessorContext};
-use pulldown_cmark::{CodeBlockKind::*, Event, Options, Parser, Tag, TagEnd};
+use pulldown_cmark::{CodeBlockKind::Fenced, Event, Options, Parser, Tag, TagEnd};
 use std::sync::Arc;
 
 pub struct Mermaid {
@@ -26,7 +26,7 @@ impl Mermaid {
 }
 
 impl Preprocessor for Mermaid {
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         "mermaid-ssr"
     }
 
@@ -46,7 +46,7 @@ impl Preprocessor for Mermaid {
             }
         });
 
-        res.unwrap_or(Ok(())).map(|_| book)
+        res.unwrap_or(Ok(())).map(|()| book)
     }
 
     fn supports_renderer(&self, renderer: &str) -> Result<bool> {
@@ -54,6 +54,7 @@ impl Preprocessor for Mermaid {
     }
 }
 
+#[expect(clippy::unnecessary_wraps)]
 fn add_mermaid(content: &str, renderer: &Arc<renderer::Mermaid>) -> Result<String> {
     let mut mermaid_content = String::new();
     let mut in_mermaid_block = false;
@@ -71,7 +72,7 @@ fn add_mermaid(content: &str, renderer: &Arc<renderer::Mermaid>) -> Result<Strin
 
     let events = Parser::new_ext(content, opts);
     for (e, span) in events.into_offset_iter() {
-        log::debug!("e={:?}, span={:?}", e, span);
+        log::debug!("e={e:?}, span={span:?}");
         if let Event::Start(Tag::CodeBlock(Fenced(code))) = e.clone() {
             if &*code == "mermaid" {
                 in_mermaid_block = true;
@@ -106,18 +107,15 @@ fn add_mermaid(content: &str, renderer: &Arc<renderer::Mermaid>) -> Result<Strin
             let mermaid_code = match renderer.render(mermaid_content) {
                 Ok(svg) => {
                     log::debug!("Successfully rendered mermaid diagram to SVG");
-                    format!("{}\n\n", svg)
+                    format!("{svg}\n\n")
                 }
                 Err(e) => {
                     log::error!(
-                        "Failed to render mermaid diagram: {}. Content: {}",
-                        e,
-                        mermaid_content
+                        "Failed to render mermaid diagram: {e}. Content: {mermaid_content}"
                     );
                     // Return error as comment in HTML
                     format!(
-                        "<!-- Mermaid rendering error: {} -->\n<pre class=\"mermaid-error\">Error rendering diagram</pre>\n\n",
-                        e
+                        "<!-- Mermaid rendering error: {e} -->\n<pre class=\"mermaid-error\">Error rendering diagram</pre>\n\n"
                     )
                 }
             };
@@ -131,7 +129,7 @@ fn add_mermaid(content: &str, renderer: &Arc<renderer::Mermaid>) -> Result<Strin
     for (span, block) in mermaid_blocks.iter().rev() {
         let pre_content = &content[0..span.start];
         let post_content = &content[span.end..];
-        content = format!("{}\n{}{}", pre_content, block, post_content);
+        content = format!("{pre_content}\n{block}{post_content}");
     }
     Ok(content)
 }
