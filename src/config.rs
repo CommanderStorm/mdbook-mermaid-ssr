@@ -67,7 +67,7 @@ pub enum SecurityLevel {
     /// HTML tags in text are allowed (only script elements are removed), and click functionality is enabled.
     Antiscript,
     /// Move rendering into a sandboxed iframe.
-    /// 
+    ///
     /// This prevents any JavaScript from running in the context.
     /// This may hinder interactive functionality of the diagram, like scripts, popups in the sequence diagram, or links to other tabs or targets, etc.
     Sandbox,
