@@ -1,9 +1,10 @@
+use anyhow::bail;
 use clap::{Parser, Subcommand};
 use mdbook_mermaid_ssr::Mermaid;
 use mdbook_preprocessor::Preprocessor;
 use mdbook_preprocessor::errors::Error;
 
-use std::{io, process};
+use std::io;
 
 #[derive(Parser)]
 #[command(
@@ -25,19 +26,14 @@ enum Commands {
     },
 }
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
 
     let cli = Cli::parse();
 
     match cli.command {
         Some(Commands::Supports { renderer }) => handle_supports(&renderer),
-        None => {
-            if let Err(e) = handle_preprocessing() {
-                eprintln!("{}", e);
-                process::exit(1);
-            }
-        }
+        None => handle_preprocessing(),
     }
 }
 
@@ -54,27 +50,20 @@ fn handle_preprocessing() -> Result<(), Error> {
     }
 
     let preprocessor = Mermaid::new()
-        .map_err(|e| Error::msg(format!("Failed to initialize mermaid preprocessor: {}", e)))?;
+        .map_err(|e| Error::msg(format!("Failed to initialize mermaid preprocessor: {e}")))?;
     let processed_book = preprocessor.run(&ctx, book)?;
     serde_json::to_writer(io::stdout(), &processed_book)?;
 
     Ok(())
 }
 
-fn handle_supports(renderer: &str) -> ! {
-    let preprocessor = match Mermaid::new() {
-        Ok(p) => p,
-        Err(_) => {
-            // If we can't initialize, we can't support any renderer
-            process::exit(1);
-        }
+fn handle_supports(renderer: &str) -> anyhow::Result<()> {
+    let Ok(preprocessor) = Mermaid::new() else {
+        bail!("can't mermaid renderer for given renderer");
     };
-    let supported = preprocessor.supports_renderer(renderer);
-
-    // Signal whether the renderer is supported by exiting with 1 or 0.
-    if let Ok(true) = supported {
-        process::exit(0);
-    } else {
-        process::exit(1);
+    let supported = preprocessor.supports_renderer(renderer).is_ok_and(|s| s);
+    if !supported {
+        bail!("renderer not supported, but chrome can be initialized, so this could be possible");
     }
+    Ok(())
 }

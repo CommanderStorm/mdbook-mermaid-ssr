@@ -1,7 +1,10 @@
 [package]
 name = "mdbook-mermaid-ssr"
 version = "0.2.0"
-authors = ["Frank Elsinga <frank.elsinga@tum.de>", "Jan-Erik Rediger <janerik@fnordig.de>"]
+authors = [
+    "Frank Elsinga <frank.elsinga@tum.de>",
+    "Jan-Erik Rediger <janerik@fnordig.de>",
+]
 description = "mdbook preprocessor to add mermaid support with server-side rendering"
 license = "MPL-2.0"
 homepage = "https://github.com/CommanderStorm/mdbook-mermaid-ssr"
@@ -13,28 +16,26 @@ name = "mdbook-mermaid-ssr"
 path = "src/bin/mdbook-mermaid-ssr.rs"
 
 [dependencies]
+anyhow = "1.0"
+clap = { version = "4.0.29", features = ["cargo", "derive"] }
+env_logger = "0.11.8"
+escape_string = "0.1"
+headless_chrome = "1.0"
+log = "0.4.11"
 mdbook-preprocessor = "0.5.0"
 pulldown-cmark = { version = "0.13.0", default-features = false }
-env_logger = "0.11.8"
-log = "0.4.11"
-clap = { version = "4.0.29", features = ["cargo", "derive"] }
 serde_json = "1.0.57"
 toml = "0.9"
-headless_chrome = "1.0"
-escape_string = "0.1"
 unescape = "0.1"
-anyhow = "1.0"
 
 [dev-dependencies]
 assert_cmd = "2.0.0"
-pretty_assertions = "1.4.0"
-tempfile = "3.3.0"
 insta = "1.45"
+pretty_assertions = "1.4.0"
 regex = "1.0"
+tempfile = "3.3.0"
 
-[workspace]
-
-[workspace.lints.clippy]
+[lints.clippy]
 # Restrictions
 unimplemented = "warn"
 panic_in_result_fn = "warn"
