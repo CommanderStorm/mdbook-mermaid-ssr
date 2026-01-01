@@ -1,9 +1,14 @@
 use std::sync::Arc;
+use std::time::Duration;
 
 use anyhow::{Result, bail};
 use escape_string::escape;
-use headless_chrome::{Browser, Tab};
+use headless_chrome::{Browser, LaunchOptions, Tab};
+use serde_json::Value;
 use unescape::unescape;
+
+/// Default timeout for Chrome operations (30 seconds)
+pub const DEFAULT_TIMEOUT_SECS: Duration = Duration::from_secs(30);
 
 /// The Mermaid struct holds the embedded Chromium instance that is used to render Mermaid
 /// diagrams
@@ -14,13 +19,38 @@ pub struct Mermaid {
 }
 
 impl Mermaid {
-    /// Initializes Mermaid
+    /// Initializes Mermaid with default timeout settings
     pub fn try_init() -> Result<Self> {
-        let browser = Browser::default()?;
+        Self::try_init_with_timeout(DEFAULT_TIMEOUT_SECS)
+    }
+
+    /// Initializes Mermaid with custom timeout
+    ///
+    /// # Arguments
+    /// * `timeout` - Maximum duration for Chrome operations (navigation, evaluation, etc.)
+    ///
+    /// # Example:
+    /// ```no_run
+    /// # use mdbook_mermaid_ssr::renderer::Mermaid;
+    /// # use std::time::Duration;
+    /// let mermaid = Mermaid::try_init_with_timeout(Duration::from_secs(60))
+    ///     .expect("Failed to initialize");
+    /// ```
+    pub fn try_init_with_timeout(timeout: Duration) -> Result<Self> {
+        // Configure browser with timeout settings
+        let launch_options = LaunchOptions::default_builder()
+            .idle_browser_timeout(timeout)
+            .build()?;
+
+        let browser = Browser::new(launch_options)?;
         let mermaid_js = include_str!("../payload/mermaid.js");
         let html_payload = include_str!("../payload/index.html");
 
         let tab = browser.new_tab()?;
+
+        // Set default timeout for tab operations
+        tab.set_default_timeout(timeout);
+
         tab.navigate_to(&format!("data:text/html;charset=utf-8,{}", html_payload))?;
 
         // Load mermaid library
@@ -28,22 +58,22 @@ impl Mermaid {
 
         // Initialize mermaid and set up render function in global scope
         let init_script = r#"
-            mermaid.initialize({
-                startOnLoad: false,
-                theme: 'default',
-                securityLevel: 'loose'
-            });
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: 'default',
+                    securityLevel: 'loose'
+                });
 
-            window.render = async function(code) {
-                try {
-                    const { svg } = await mermaid.render('mermaid-diagram-' + Date.now(), code);
-                    return svg;
-                } catch (error) {
-                    console.error('Mermaid rendering error:', error);
-                    return null;
-                }
-            };
-        "#;
+                window.render = async function(code) {
+                    try {
+                        const { svg } = await mermaid.render('mermaid-diagram-' + Date.now(), code);
+                        return svg;
+                    } catch (error) {
+                        console.error('Mermaid rendering error:', error);
+                        return null;
+                    }
+                };
+            "#;
         tab.evaluate(init_script, false)?;
 
         Ok(Self {
@@ -67,14 +97,26 @@ impl Mermaid {
             escape(input)
         );
         let data = self.tab.evaluate(&script, true)?;
-        let string = data.value.unwrap_or_default().to_string();
-        let slice = unescape(string.trim_matches('"')).unwrap_or_default();
 
-        if slice == "null" || slice.is_empty() {
-            bail!("Failed to compile Mermaid diagram");
+        // Use proper JSON parsing instead of fragile string operations
+        let svg = match data.value {
+            Some(Value::String(s)) => {
+                // Unescape the string value if needed
+                unescape(&s).unwrap_or(s)
+            }
+            Some(Value::Null) | None => {
+                bail!("Failed to compile Mermaid diagram: render returned null");
+            }
+            Some(other) => {
+                bail!("Unexpected return type from render: {:?}", other);
+            }
+        };
+
+        if svg.is_empty() {
+            bail!("Failed to compile Mermaid diagram: empty result");
         }
 
-        Ok(slice.to_string())
+        Ok(svg)
     }
 }
 
@@ -109,5 +151,12 @@ mod tests {
         let mermaid = Mermaid::try_init().unwrap();
         let rendered = mermaid.render("grph TB\na-->b");
         assert!(rendered.is_err());
+    }
+
+    #[test]
+    fn test_custom_timeout() {
+        use std::time::Duration;
+        let mermaid = Mermaid::try_init_with_timeout(Duration::from_secs(60));
+        assert!(mermaid.is_ok());
     }
 }
