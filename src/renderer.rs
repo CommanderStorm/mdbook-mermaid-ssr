@@ -9,9 +9,6 @@ use unescape::unescape;
 
 use crate::config::Config;
 
-/// Default timeout for Chrome operations (30 seconds)
-pub const DEFAULT_TIMEOUT_SECS: Duration = Duration::from_secs(30);
-
 /// The Mermaid struct holds the embedded Chromium instance that is used to render Mermaid
 /// diagrams
 #[derive(Clone)]

@@ -8,7 +8,7 @@ pub const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "kebab-case"))]
 pub struct Config {
-    /// Timeout for rendering operations in milliseconds
+    /// Timeout for rendering operations
     #[serde(default = "default_timeout", with = "humantime_serde")]
     pub timeout: Duration,
 
@@ -66,7 +66,10 @@ pub enum SecurityLevel {
     Loose,
     /// HTML tags in text are allowed (only script elements are removed), and click functionality is enabled.
     Antiscript,
-    /// With this security level, all rendering takes place in a sandboxed iframe. This prevent any JavaScript from running in the context. This may hinder interactive functionality of the diagram, like scripts, popups in the sequence diagram, or links to other tabs or targets, etc.
+    /// Move rendering into a sandboxed iframe.
+    /// 
+    /// This prevents any JavaScript from running in the context.
+    /// This may hinder interactive functionality of the diagram, like scripts, popups in the sequence diagram, or links to other tabs or targets, etc.
     Sandbox,
 }
 
