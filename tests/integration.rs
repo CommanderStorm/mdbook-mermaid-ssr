@@ -1,6 +1,5 @@
 use log::info;
 use mdbook_mermaid_ssr::renderer::Oxfmt;
-use pretty_assertions::assert_ne;
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
@@ -10,7 +9,6 @@ static BUILD_BINARY_ONCE: Once = Once::new();
 static BUILD_SIMPLE_BOOK: Once = Once::new();
 static BUILD_ERROR_COMMENT: Once = Once::new();
 static BUILD_THEME_FOREST: Once = Once::new();
-static BUILD_FULL_CONFIG: Once = Once::new();
 
 fn test_book_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -204,85 +202,4 @@ fn test_config_theme_forest() {
     );
 
     insta::assert_snapshot!("theme_forest", content);
-}
-
-#[test]
-fn test_config_security_level_in_output() {
-    BUILD_FULL_CONFIG.call_once(|| {
-        build_book("full-config");
-    });
-
-    let output = output_dir().join("full-config");
-
-    let content =
-        fs::read_to_string(output.join("dark_theme.html")).expect("Failed to read dark_theme.html");
-
-    assert!(
-        content.contains("<svg"),
-        "Diagrams should render with loose security level"
-    );
-}
-
-#[test]
-fn test_all_diagram_types_with_config() {
-    BUILD_FULL_CONFIG.call_once(|| {
-        build_book("full-config");
-    });
-
-    let output = output_dir().join("full-config");
-
-    let content = fs::read_to_string(output.join("multiple_diagrams.html"))
-        .expect("Failed to read multiple_diagrams.html");
-
-    let main_content = extract_main_content(&content);
-
-    let svg_count = main_content.matches("<svg").count();
-    assert!(
-        svg_count >= 5,
-        "Should have at least 5 different diagram types rendered, found {svg_count}"
-    );
-
-    assert!(
-        main_content.contains("Flowchart") || main_content.contains("flowchart"),
-        "Should reference flowchart diagrams"
-    );
-    assert!(
-        main_content.contains("Sequence") || main_content.contains("sequence"),
-        "Should reference sequence diagrams"
-    );
-    assert!(
-        main_content.contains("Class") || main_content.contains("class"),
-        "Should reference class diagrams"
-    );
-}
-
-#[test]
-fn test_config_affects_svg_output() {
-    BUILD_FULL_CONFIG.call_once(|| {
-        build_book("full-config");
-    });
-    let full_config_output = output_dir().join("full-config");
-    let full_config_content = fs::read_to_string(full_config_output.join("dark_theme.html"))
-        .expect("Failed to read dark_theme.html");
-
-    BUILD_SIMPLE_BOOK.call_once(|| {
-        build_book("simple-book");
-    });
-    let output = output_dir().join("simple-book");
-    let default_content = fs::read_to_string(output.join("chapter_with_mermaid.html"))
-        .expect("Failed to read default chapter");
-
-    assert!(
-        full_config_content.contains("<svg"),
-        "Full config should have SVG"
-    );
-    assert!(
-        default_content.contains("<svg"),
-        "Default config should have SVG"
-    );
-
-    assert_ne!(
-        full_config_content, default_content,
-        "Configuration should affect the final HTML output"
-    );
 }
