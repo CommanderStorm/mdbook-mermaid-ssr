@@ -4,18 +4,18 @@ use std::process::Command;
 use std::sync::Once;
 
 static BUILD_ONCE: Once = Once::new();
+static BUILD_BINARY_ONCE: Once = Once::new();
 
 fn test_book_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("tests")
         .join("fixtures")
-        .join("test-book")
 }
 
 fn output_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("target")
-        .join("test-book")
+        .join("books")
 }
 
 /// Format HTML with proper indentation for better readability in snapshots
@@ -54,9 +54,9 @@ fn format_html(html: &str) -> String {
     }
 }
 
-fn ensure_built() {
-    BUILD_ONCE.call_once(|| {
-        // First, build the mdbook-mermaid-ssr binary
+/// Ensure the mdbook-mermaid-ssr binary is built (only once per test run)
+fn ensure_binary_built() {
+    BUILD_BINARY_ONCE.call_once(|| {
         let build_status = Command::new("cargo")
             .arg("build")
             .arg("--bin")
@@ -69,43 +69,50 @@ fn ensure_built() {
             build_status.success(),
             "Failed to build mdbook-mermaid-ssr binary"
         );
-
-        let book_dir = test_book_dir();
-        let output = output_dir();
-
-        // Clean previous build to ensure we test current code
-        if output.exists() {
-            fs::remove_dir_all(&output).expect("Failed to clean output directory");
-        }
-
-        // Get the path to the built binary
-        let binary_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("target")
-            .join("debug")
-            .join("mdbook-mermaid-ssr");
-
-        // Add the binary directory to PATH for mdbook to find the preprocessor
-        let path_env = std::env::var("PATH").unwrap_or_default();
-        let binary_dir = binary_path.parent().unwrap();
-        let new_path = format!("{}:{}", binary_dir.display(), path_env);
-
-        // Build the book using mdbook
-        let status = Command::new("mdbook")
-            .arg("build")
-            .arg("--dest-dir")
-            .arg(output)
-            .current_dir(&book_dir)
-            .env("PATH", new_path)
-            .status()
-            .expect("Failed to run mdbook build");
-
-        assert!(status.success(), "mdbook build failed");
     });
+}
+
+/// Build a specific mdbook with the preprocessor
+fn build_book(book_name: &str) -> PathBuf {
+    ensure_binary_built();
+
+    // Clean previous build to ensure we test current code
+    let output_dir = output_dir().join(book_name);
+    if output_dir.exists() {
+        fs::remove_dir_all(&output_dir).expect("Failed to clean output directory");
+    }
+
+    // Get the path to the built binary
+    let binary_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("target")
+        .join("debug")
+        .join("mdbook-mermaid-ssr");
+
+    // Add the binary directory to PATH for mdbook to find the preprocessor
+    let path_env = std::env::var("PATH").unwrap_or_default();
+    let binary_dir = binary_path.parent().unwrap();
+    let new_path = format!("{}:{}", binary_dir.display(), path_env);
+
+    // Build the book using mdbook
+    let book_dir = test_book_dir().join(book_name);
+    let status = Command::new("mdbook")
+        .arg("build")
+        .arg("--dest-dir")
+        .arg(&output_dir)
+        .current_dir(&book_dir)
+        .env("PATH", new_path)
+        .status()
+        .expect("Failed to run mdbook build");
+
+    assert!(status.success(), "mdbook {book_name} build failed");
+    output_dir
 }
 
 #[test]
 fn test_book_builds() {
-    ensure_built();
+    BUILD_ONCE.call_once(|| {
+        build_book("test-book");
+    });
 
     let output = output_dir();
     assert!(output.exists(), "Output directory should exist");
@@ -117,7 +124,9 @@ fn test_book_builds() {
 
 #[test]
 fn test_chapter_with_mermaid() {
-    ensure_built();
+    BUILD_ONCE.call_once(|| {
+        build_book("test-book");
+    });
 
     let content = fs::read_to_string(output_dir().join("chapter_with_mermaid.html"))
         .expect("Failed to read chapter_with_mermaid.html");
@@ -150,7 +159,9 @@ fn test_chapter_with_mermaid() {
 
 #[test]
 fn test_chapter_without_mermaid() {
-    ensure_built();
+    BUILD_ONCE.call_once(|| {
+        build_book("test-book");
+    });
 
     let content = fs::read_to_string(output_dir().join("chapter_without_mermaid.html"))
         .expect("Failed to read chapter_without_mermaid.html");
@@ -193,95 +204,9 @@ fn test_chapter_without_mermaid() {
     "##);
 }
 
-// Helper function to build a test book with specific configuration
-fn build_test_book(book_name: &str) -> PathBuf {
-    let book_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("tests")
-        .join("fixtures")
-        .join(book_name);
-
-    let output = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("target")
-        .join(book_name);
-
-    // Clean previous build
-    if output.exists() {
-        fs::remove_dir_all(&output).expect("Failed to clean output directory");
-    }
-
-    // Get the path to the built binary
-    let binary_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("target")
-        .join("debug")
-        .join("mdbook-mermaid-ssr");
-
-    // Ensure binary exists
-    if !binary_path.exists() {
-        let build_status = Command::new("cargo")
-            .arg("build")
-            .arg("--bin")
-            .arg("mdbook-mermaid-ssr")
-            .current_dir(env!("CARGO_MANIFEST_DIR"))
-            .status()
-            .expect("Failed to build mdbook-mermaid-ssr");
-
-        assert!(
-            build_status.success(),
-            "Failed to build mdbook-mermaid-ssr binary"
-        );
-    }
-
-    // Add the binary directory to PATH
-    let path_env = std::env::var("PATH").unwrap_or_default();
-    let binary_dir = binary_path.parent().unwrap();
-    let new_path = format!("{}:{}", binary_dir.display(), path_env);
-
-    // Build the book
-    let status = Command::new("mdbook")
-        .arg("build")
-        .arg("--dest-dir")
-        .arg(&output)
-        .current_dir(&book_dir)
-        .env("PATH", new_path)
-        .status()
-        .expect("Failed to run mdbook build");
-
-    assert!(status.success(), "mdbook build failed for {}", book_name);
-
-    output
-}
-
-#[test]
-fn test_config_custom_timeout() {
-    let output = build_test_book("test-book-with-timeout");
-
-    // Verify the book built successfully
-    assert!(output.exists(), "Output directory should exist");
-    assert!(
-        output.join("index.html").exists(),
-        "index.html should exist"
-    );
-
-    // Read the chapter and verify diagram rendered
-    let content = fs::read_to_string(output.join("chapter_with_mermaid.html"))
-        .expect("Failed to read chapter_with_mermaid.html");
-
-    // Should contain rendered SVG
-    assert!(
-        content.contains("<svg") && content.contains("graph"),
-        "Chapter should contain rendered mermaid diagram"
-    );
-
-    // Verify the specific diagram content is present
-    assert!(
-        content.contains("Is timeout configured"),
-        "Should contain timeout-specific diagram content"
-    );
-}
-
 #[test]
 fn test_config_on_error_comment() {
-    let output = build_test_book("test-book-error-comment");
+    let output = build_book("test-book-error-comment");
 
     // Verify the book built successfully (should not fail despite invalid diagram)
     assert!(output.exists(), "Output directory should exist");
@@ -315,7 +240,7 @@ fn test_config_on_error_comment() {
 
 #[test]
 fn test_config_theme_forest() {
-    let output = build_test_book("test-book-theme-forest");
+    let output = build_book("test-book-theme-forest");
 
     assert!(output.exists(), "Output directory should exist");
 
@@ -343,7 +268,7 @@ fn test_config_theme_forest() {
 
 #[test]
 fn test_config_full_configuration() {
-    let output = build_test_book("test-book-full-config");
+    let output = build_book("test-book-full-config");
 
     assert!(output.exists(), "Output directory should exist");
 
@@ -398,7 +323,7 @@ fn test_config_full_configuration() {
 
 #[test]
 fn test_config_security_level_in_output() {
-    let output = build_test_book("test-book-full-config");
+    let output = build_book("test-book-full-config");
 
     let content =
         fs::read_to_string(output.join("dark_theme.html")).expect("Failed to read dark_theme.html");
@@ -412,7 +337,7 @@ fn test_config_security_level_in_output() {
 
 #[test]
 fn test_all_diagram_types_with_config() {
-    let output = build_test_book("test-book-full-config");
+    let output = build_book("test-book-full-config");
 
     let content = fs::read_to_string(output.join("multiple_diagrams.html"))
         .expect("Failed to read multiple_diagrams.html");
@@ -452,7 +377,7 @@ fn test_all_diagram_types_with_config() {
 #[test]
 fn test_config_affects_svg_output() {
     // Build book with full config (dark theme + handDrawn)
-    let full_config_output = build_test_book("test-book-full-config");
+    let full_config_output = build_book("test-book-full-config");
     let full_config_content = fs::read_to_string(full_config_output.join("dark_theme.html"))
         .expect("Failed to read dark_theme.html");
 

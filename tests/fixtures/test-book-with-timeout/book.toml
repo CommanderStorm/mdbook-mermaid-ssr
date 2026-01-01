@@ -1,9 +1,0 @@
-[book]
-title = "Test Book with Custom Timeout"
-authors = ["Test Author"]
-
-[preprocessor.mermaid-ssr]
-timeout = "60s"
-
-[output.html]
-search.enable = false

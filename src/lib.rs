@@ -120,7 +120,7 @@ fn add_mermaid(content: &str, renderer: &renderer::Mermaid, config: &Config) -> 
                     // Handle error based on configuration
                     match config.on_error {
                         ErrorHandling::Fail => {
-                            return Err(e.into());
+                            return Err(e);
                         }
                         ErrorHandling::Comment => {
                             // Return error as comment in HTML
