@@ -4,7 +4,7 @@ A preprocessor for [mdbook](https://github.com/rust-lang-nursery/mdBook) to add 
 
 > [!IMPORTANT]
 > `mdbook-mermaid-ssr` provides server-side rendering for Mermaid diagrams in mdBook.
-Unlike the original `mdbook-mermaid` which uses client-side JavaScript rendering, `mdbook-mermaid-ss` pre-renders all diagrams to SVG during the build process using headless Chrome.
+Unlike the original `mdbook-mermaid` which uses client-side JavaScript rendering, `mdbook-mermaid-ssr` pre-renders all diagrams to SVG during the build process using headless Chrome.
 >
 > This is not an upgrade/competition - it's a separate package with different requirements and behavior.
 > 
