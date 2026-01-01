@@ -9,7 +9,7 @@ pub const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);
 #[serde(rename_all = "kebab-case")]
 pub struct Config {
     /// Timeout for rendering operations in milliseconds
-    #[serde(default = "default_timeout")]
+    #[serde(default = "default_timeout", with = "humantime_serde")]
     pub timeout: Duration,
 
     /// How to handle rendering errors
@@ -92,7 +92,7 @@ impl Config {
         let additional: serde_json::Map<String, serde_json::Value> = mermaid_config
             .additional
             .into_iter()
-            .map(|(key, value)| (kebab_to_camel(&key), value.clone()))
+            .map(|(key, value)| (kebab_to_camel(&key), value))
             .collect();
         mermaid_config.additional = additional;
 
@@ -117,19 +117,14 @@ window.render = async function(id, code) {{
 }
 
 /// How to handle rendering errors
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum ErrorHandling {
     /// Fail the build on rendering errors
+    #[default]
     Fail,
     /// Emit HTML comments on rendering errors (default)
     Comment,
-}
-
-impl Default for ErrorHandling {
-    fn default() -> Self {
-        ErrorHandling::Comment
-    }
 }
 
 fn kebab_to_camel(s: &str) -> String {

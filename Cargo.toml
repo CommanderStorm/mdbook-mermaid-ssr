@@ -26,6 +26,7 @@ escape_string = "0.1"
 unescape = "0.1"
 anyhow = "1.0"
 fxhash = "0.2.1"
+humantime-serde = "1.1"
 
 [dev-dependencies]
 assert_cmd = "2.0.0"
