@@ -659,6 +659,7 @@ checksum = "983e3b24350c84ab8a65151f537d67afbbf7153bb9f1110e03e9fa9b07f67a5c"
 dependencies = [
  "console",
  "once_cell",
+ "serde",
  "similar",
  "tempfile",
 ]
@@ -756,6 +757,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tempfile",
+ "toml",
  "unescape",
 ]
 

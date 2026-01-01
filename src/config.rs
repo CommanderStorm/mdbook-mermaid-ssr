@@ -224,4 +224,35 @@ mod tests {
         assert_eq!(kebab_to_camel("theme"), "theme");
         assert_eq!(kebab_to_camel("flowchartCurve"), "flowchartCurve");
     }
+
+    #[test]
+    fn test_config_deserialization_from_toml() {
+        let toml_str = r#"
+            timeout = "60s"
+            on-error = "comment"
+            chrome-path = "/usr/bin/chromium"
+            security-level = "loose"
+            theme = "dark"
+            look = "handDrawn"
+        "#;
+
+        let config = toml::from_str(toml_str).expect("Failed to deserialize config");
+        let Config {
+            timeout,
+            on_error,
+            chrome_path,
+            mermaid,
+        } = config;
+        assert_eq!(timeout, Duration::from_secs(60));
+        assert_eq!(on_error, ErrorHandling::Comment);
+        assert_eq!(chrome_path, Some(PathBuf::from("/usr/bin/chromium")));
+        insta::assert_json_snapshot!(mermaid, @r#"
+        {
+          "securityLevel": "loose",
+          "startOnLoad": false,
+          "look": "handDrawn",
+          "theme": "dark"
+        }
+        "#);
+    }
 }
