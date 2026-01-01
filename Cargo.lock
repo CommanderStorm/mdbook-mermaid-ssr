@@ -760,6 +760,7 @@ dependencies = [
  "pretty_assertions",
  "pulldown-cmark",
  "regex",
+ "serde",
  "serde_json",
  "tempfile",
  "toml",
