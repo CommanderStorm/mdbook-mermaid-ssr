@@ -89,7 +89,7 @@ That's it! No JavaScript files or additional configuration needed. Diagrams are 
 # Timeout for rendering operations (default: 30s)
 timeout = "30s"
 
-# Error handling: "fail" or "comment" (default: "comment")
+# Error handling: "fail" (default) or "comment"
 # - "fail": Build fails on rendering errors
 # - "comment": Errors are emitted as HTML comments
 on-error = "comment"
