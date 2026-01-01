@@ -202,9 +202,7 @@ grph TB
         insta::assert_snapshot!("security_level_sandbox", format_html(svg));
     }
 
-    /// Format HTML with proper indentation for better readability in snapshots
-    fn format_html(html: impl AsRef<str>) -> String {
-        // Try to format with oxfmt if available
+    fn format_html(html: &str) -> String {
         let result = Command::new("npx")
             .arg("oxfmt@latest")
             .arg("--stdin-filepath")
@@ -218,22 +216,33 @@ grph TB
             Ok(mut child) => {
                 use std::io::Write;
                 if let Some(mut stdin) = child.stdin.take() {
-                    let _ = stdin.write_all(html.as_ref().as_bytes());
+                    let _ = stdin.write_all(html.as_bytes());
                 }
 
                 match child.wait_with_output() {
                     Ok(output) if output.status.success() => {
                         String::from_utf8_lossy(&output.stdout).to_string()
                     }
-                    _ => {
-                        eprintln!("Warning: oxfmt formatting failed, using original HTML");
-                        html.as_ref().to_string()
+                    Ok(output) => {
+                        panic!(
+                            r#"oxfmt formatting failed, using original HTML because
+    -------
+    STDERR:
+    {}
+    -------
+    STDOUT:
+    {}"#,
+                            String::from_utf8_lossy(&output.stderr),
+                            String::from_utf8_lossy(&output.stdout)
+                        );
+                    }
+                    Err(e) => {
+                        panic!("oxfmt formatting failed, using original HTML because {e}");
                     }
                 }
             }
-            Err(_) => {
-                eprintln!("Warning: oxfmt not available, using original HTML");
-                html.as_ref().to_string()
+            Err(e) => {
+                panic!("oxfmt not available, using original HTML because {e}");
             }
         }
     }
