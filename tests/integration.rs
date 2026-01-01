@@ -4,6 +4,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 use std::sync::Once;
+use mdbook_mermaid_ssr::renderer::Oxfmt;
 
 static BUILD_BINARY_ONCE: Once = Once::new();
 static BUILD_TEST_BOOK: Once = Once::new();
@@ -21,51 +22,6 @@ fn output_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("target")
         .join("books")
-}
-
-fn format_html(html: &str) -> String {
-    let result = Command::new("npx")
-        .arg("oxfmt@latest")
-        .arg("--stdin-filepath")
-        .arg("snapshot.html")
-        .stdin(std::process::Stdio::piped())
-        .stdout(std::process::Stdio::piped())
-        .stderr(std::process::Stdio::piped())
-        .spawn();
-
-    match result {
-        Ok(mut child) => {
-            use std::io::Write;
-            if let Some(mut stdin) = child.stdin.take() {
-                let _ = stdin.write_all(html.as_bytes());
-            }
-
-            match child.wait_with_output() {
-                Ok(output) if output.status.success() => {
-                    String::from_utf8_lossy(&output.stdout).to_string()
-                }
-                Ok(output) => {
-                    panic!(
-                        r#"oxfmt formatting failed, using original HTML because
--------
-STDERR:
-{}
--------
-STDOUT:
-{}"#,
-                        String::from_utf8_lossy(&output.stderr),
-                        String::from_utf8_lossy(&output.stdout)
-                    );
-                }
-                Err(e) => {
-                    panic!("oxfmt formatting failed, using original HTML because {e}");
-                }
-            }
-        }
-        Err(e) => {
-            panic!("oxfmt not available, using original HTML because {e}");
-        }
-    }
 }
 
 fn ensure_binary_built() {
@@ -160,7 +116,7 @@ fn test_chapter_with_mermaid() {
     );
 
     let main_content = extract_main_content(&content);
-    let formatted = format_html(main_content);
+    let formatted = Oxfmt::format(main_content).expect("Failed to format SVG");
     insta::assert_snapshot!("chapter_with_mermaid", formatted);
 }
 
@@ -181,7 +137,7 @@ fn test_chapter_without_mermaid() {
     assert!(content.contains("rust"), "Should preserve rust code blocks");
 
     let main_content = extract_main_content(&content);
-    let formatted = format_html(main_content);
+    let formatted = Oxfmt::format(main_content).expect("Failed to format SVG");
     insta::assert_snapshot!("chapter_without_mermaid", formatted);
 }
 
@@ -216,7 +172,7 @@ fn test_config_on_error_comment() {
     );
 
     let main_content = extract_main_content(&content);
-    let formatted = format_html(main_content);
+    let formatted = Oxfmt::format(main_content).expect("Failed to format SVG");
     insta::assert_snapshot!("error_comment_handling", formatted);
 }
 
@@ -246,7 +202,7 @@ fn test_config_theme_forest() {
     );
 
     let main_content = extract_main_content(&content);
-    let formatted = format_html(main_content);
+    let formatted = Oxfmt::format(main_content).expect("Failed to format SVG");
     insta::assert_snapshot!("theme_forest", formatted);
 }
 
@@ -272,7 +228,7 @@ fn test_config_full_configuration() {
     );
 
     let dark_main = extract_main_content(&dark_content);
-    let dark_formatted = format_html(dark_main);
+    let dark_formatted = Oxfmt::format(dark_main).expect("Failed to format SVG");
     insta::assert_snapshot!("full_config_dark_theme", dark_formatted);
 
     let hand_drawn_content =
@@ -288,7 +244,7 @@ fn test_config_full_configuration() {
     );
 
     let hand_drawn_main = extract_main_content(&hand_drawn_content);
-    let hand_drawn_formatted = format_html(hand_drawn_main);
+    let hand_drawn_formatted = Oxfmt::format(hand_drawn_main).expect("Failed to format svg");
     insta::assert_snapshot!("full_config_hand_drawn", hand_drawn_formatted);
 
     let multiple_content = fs::read_to_string(output.join("multiple_diagrams.html"))
@@ -309,7 +265,7 @@ fn test_config_full_configuration() {
     );
 
     let multiple_main = extract_main_content(&multiple_content);
-    let multiple_formatted = format_html(multiple_main);
+    let multiple_formatted = Oxfmt::format(multiple_main).expect("Failed to format svg");
     insta::assert_snapshot!("full_config_multiple_diagrams", multiple_formatted);
 }
 

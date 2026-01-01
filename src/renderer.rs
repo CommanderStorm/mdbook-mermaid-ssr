@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{process::Command, sync::Arc};
 
 use anyhow::{Result, bail};
 use escape_string::escape;
@@ -105,10 +105,56 @@ impl Mermaid {
     }
 }
 
+pub struct Oxfmt;
+impl Oxfmt {
+    pub fn format(input: impl AsRef<str>) -> anyhow::Result<String> {
+        let result = Command::new("npx")
+            .arg("oxfmt@latest")
+            .arg("--stdin-filepath")
+            .arg("snapshot.html")
+            .stdin(std::process::Stdio::piped())
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::piped())
+            .spawn();
+
+        match result {
+            Ok(mut child) => {
+                use std::io::Write;
+                if let Some(mut stdin) = child.stdin.take() {
+                    let _ = stdin.write_all(input.as_ref().as_bytes());
+                }
+
+                match child.wait_with_output() {
+                    Ok(output) if output.status.success() => {
+                        Ok(String::from_utf8_lossy(&output.stdout).to_string())
+                    }
+                    Ok(output) => {
+                        bail!(
+                            r#"oxfmt formatting failed, using original HTML because
+          -------
+          STDERR:
+          {}
+          -------
+          STDOUT:
+          {}"#,
+                            String::from_utf8_lossy(&output.stderr),
+                            String::from_utf8_lossy(&output.stdout)
+                        );
+                    }
+                    Err(e) => {
+                        bail!("oxfmt formatting failed, using original HTML because {e}");
+                    }
+                }
+            }
+            Err(e) => {
+                bail!("oxfmt not available, using original HTML because {e}");
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use std::process::Command;
-
     use crate::config::SecurityLevel;
 
     use super::*;
@@ -151,7 +197,8 @@ grph TB
     A -->|"<em>edge label</em>"| B"#;
 
         let svg = mermaid.render(diagram).unwrap();
-        insta::assert_snapshot!("security_level_strict", format_html(svg));
+        let fmt = Oxfmt::format(svg).expect("Failed to format SVG");
+        insta::assert_snapshot!("security_level_strict", fmt);
     }
 
     #[test]
@@ -167,7 +214,8 @@ grph TB
     A -->|"<em>edge</em>"| B"#;
 
         let svg = mermaid.render(diagram).unwrap();
-        insta::assert_snapshot!("security_level_loose", format_html(svg));
+        let fmt = Oxfmt::format(svg).expect("Failed to format SVG");
+        insta::assert_snapshot!("security_level_loose", fmt);
     }
 
     #[test]
@@ -183,7 +231,8 @@ grph TB
     A -->|"<span>edge</span>"| B"#;
 
         let svg = mermaid.render(diagram).unwrap();
-        insta::assert_snapshot!("security_level_antiscript", format_html(svg));
+        let fmt = Oxfmt::format(svg).expect("Failed to format SVG");
+        insta::assert_snapshot!("security_level_antiscript", fmt);
     }
 
     #[test]
@@ -199,51 +248,7 @@ grph TB
     A --> B"#;
 
         let svg = mermaid.render(diagram).unwrap();
-        insta::assert_snapshot!("security_level_sandbox", format_html(svg));
-    }
-
-    fn format_html(html: &str) -> String {
-        let result = Command::new("npx")
-            .arg("oxfmt@latest")
-            .arg("--stdin-filepath")
-            .arg("snapshot.html")
-            .stdin(std::process::Stdio::piped())
-            .stdout(std::process::Stdio::piped())
-            .stderr(std::process::Stdio::piped())
-            .spawn();
-
-        match result {
-            Ok(mut child) => {
-                use std::io::Write;
-                if let Some(mut stdin) = child.stdin.take() {
-                    let _ = stdin.write_all(html.as_bytes());
-                }
-
-                match child.wait_with_output() {
-                    Ok(output) if output.status.success() => {
-                        String::from_utf8_lossy(&output.stdout).to_string()
-                    }
-                    Ok(output) => {
-                        panic!(
-                            r#"oxfmt formatting failed, using original HTML because
-    -------
-    STDERR:
-    {}
-    -------
-    STDOUT:
-    {}"#,
-                            String::from_utf8_lossy(&output.stderr),
-                            String::from_utf8_lossy(&output.stdout)
-                        );
-                    }
-                    Err(e) => {
-                        panic!("oxfmt formatting failed, using original HTML because {e}");
-                    }
-                }
-            }
-            Err(e) => {
-                panic!("oxfmt not available, using original HTML because {e}");
-            }
-        }
+        let fmt = Oxfmt::format(svg).expect("Failed to format SVG");
+        insta::assert_snapshot!("security_level_sandbox", fmt);
     }
 }

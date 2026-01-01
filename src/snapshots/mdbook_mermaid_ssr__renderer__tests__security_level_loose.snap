@@ -1,6 +1,6 @@
 ---
 source: src/renderer.rs
-expression: format_html(svg)
+expression: Oxfmt::format(svg)
 ---
 <svg
   id="mermaid-diagram-9259545250656662834"

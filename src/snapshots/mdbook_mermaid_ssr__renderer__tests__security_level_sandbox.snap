@@ -1,6 +1,6 @@
 ---
 source: src/renderer.rs
-expression: format_html(svg)
+expression: Oxfmt::format(svg)
 ---
 <iframe
   style="width:100%;height:198px;border:0;margin:0;"
