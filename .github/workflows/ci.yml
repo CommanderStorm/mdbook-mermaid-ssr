@@ -27,7 +27,7 @@ jobs:
       with: {toolchain: stable}
       # depenencys
     - uses: taiki-e/install-action@e0db384ad69f5ba2c6dd0129d8934e0d0ba465c1 # v2.65.10
-      with: { tool: mdbook,cargo-insta }
+      with: { tool: "mdbook,cargo-insta" }
     - uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
     - name: Setup Node.js
       uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
