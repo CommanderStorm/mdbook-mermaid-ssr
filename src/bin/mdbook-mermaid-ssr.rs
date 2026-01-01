@@ -34,7 +34,7 @@ fn main() {
         Some(Commands::Supports { renderer }) => handle_supports(&renderer),
         None => {
             if let Err(e) = handle_preprocessing() {
-                eprintln!("{}", e);
+                log::error!("Cannot preporocess mermaid diagrams because {e}");
                 process::exit(1);
             }
         }
@@ -45,11 +45,11 @@ fn handle_preprocessing() -> Result<(), Error> {
     let (ctx, book) = mdbook_preprocessor::parse_input(io::stdin())?;
 
     if ctx.mdbook_version != mdbook_preprocessor::MDBOOK_VERSION {
-        eprintln!(
+        log::error!(
             "Warning: The mdbook-mermaid preprocessor was built against version \
-             {} of mdbook, but we're being called from version {}",
-            mdbook_preprocessor::MDBOOK_VERSION,
-            ctx.mdbook_version
+             {our_ver} of mdbook, but we're being called from version {ctx_ver}",
+            our_ver = mdbook_preprocessor::MDBOOK_VERSION,
+            ctx_ver = ctx.mdbook_version
         );
     }
 

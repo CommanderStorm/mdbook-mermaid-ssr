@@ -135,7 +135,7 @@ mod tests {
         let mermaid = Mermaid::try_init().unwrap();
         let rendered = mermaid.render("graph TB\na-->b");
         if let Err(ref e) = rendered {
-            eprintln!("Render error: {}", e);
+            log::error!("Render error: {}", e);
         }
         assert!(
             rendered.is_ok(),
