@@ -245,16 +245,15 @@ fn test_config_full_configuration_hand_drawn() {
     let content = Oxfmt::format(content).expect("Failed to format svg");
 
     assert!(
-        hand_drawn_content.contains("<svg"),
+        content.contains("<svg"),
         "Hand-drawn chapter should contain SVG"
     );
     assert!(
-        hand_drawn_content.contains("Hand-Drawn Style") || hand_drawn_content.contains("Sketchy"),
+        content.contains("Hand-Drawn Style") || content.contains("Sketchy"),
         "Should contain hand-drawn style content"
     );
-
-    let hand_drawn_main = extract_main_content(&hand_drawn_content);
-    insta::assert_snapshot!("full_config_hand_drawn", hand_drawn_main);
+    
+    insta::assert_snapshot!("full_config_hand_drawn", content);
 }
 
 #[test]
