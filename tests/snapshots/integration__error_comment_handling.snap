@@ -222,13 +222,22 @@ expression: formatted
       ></path></svg
     >Important
   </p>
-  <p><strong>Mermaid diagram rendering failed during SSR because:</strong></p>
-  <pre><code class="language-raw">Failed to compile Mermaid diagram: render returned null</code></pre>
+  <p>
+    <strong>Mermaid diagram rendering failed during SSR because:</strong>
+    <code>Failed to compile Mermaid diagram: render returned null</code>
+    <sub
+      ><sub
+        >You are seeing this message because the <code>on-error: comment</code> option is
+        enabled.</sub
+      ></sub
+    >
+  </p>
   <p>This is the diagram code that caused the error:</p>
   <pre><code class="language-raw">graph TD
     This is completely invalid syntax!!!
     No arrows, no nothing
     Just random text that mermaid cannot parse
+</code></pre>
   <p>To fix this issue, please follow these steps:</p>
   <ul>
     <li>
@@ -237,14 +246,6 @@ expression: formatted
     </li>
     <li>Look at the stdout log produced during mdbook build for more details</li>
   </ul>
-  <p>
-    <sub
-      ><sub
-        >You are seeing this message because the setting <code>on-error</code> is
-        <code>comment</code> and not <code>fail</code>.</sub
-      ></sub
-    >
-  </p>
 </blockquote>
 <h2 id="another-valid-diagram-after-error">
   <a class="header" href="#another-valid-diagram-after-error">Another Valid Diagram After Error</a>
