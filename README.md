@@ -135,7 +135,7 @@ Each diagram must be rendered in headless Chrome.
 For large books with many diagrams, this can take additional time.
 This is a trade-off for the benefits of pre-rendered SVG output.
 
-We have not currently explored parallelization or caching strategies to optimize build times.
+We have not currently explored parallelization or caching strategies to optimize build times, but would welcome contributions.
 
 ## License
 
