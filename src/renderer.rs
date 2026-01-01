@@ -111,6 +111,8 @@ impl Mermaid {
 
 #[cfg(test)]
 mod tests {
+    use std::process::Command;
+
     use crate::config::SecurityLevel;
 
     use super::*;
@@ -122,25 +124,13 @@ mod tests {
     }
 
     #[test]
-    fn render_mermaid() {
-        let mermaid = Mermaid::try_init().unwrap();
-        let rendered = mermaid.render("graph TB\na-->b");
-        if let Err(ref e) = rendered {
-            log::error!("Render error: {}", e);
-        }
-        assert!(
-            rendered.is_ok(),
-            "Failed to render mermaid diagram: {:?}",
-            rendered.err()
-        );
-        // TODO: Perform visual image comparison
-        assert!(rendered.unwrap().starts_with("<svg"));
-    }
-
-    #[test]
     fn syntax_error() {
         let mermaid = Mermaid::try_init().unwrap();
-        let rendered = mermaid.render("grph TB\na-->b");
+        let rendered = mermaid.render(
+            r#"
+grph TB
+    a-->b"#,
+        );
         assert!(rendered.is_err());
     }
 
@@ -150,5 +140,105 @@ mod tests {
         config.mermaid.security_level = SecurityLevel::Strict;
         let mermaid = Mermaid::try_init_with_config(&config);
         assert!(mermaid.is_ok());
+    }
+
+    #[test]
+    fn test_security_level_strict() {
+        let mut config = Config::default();
+        config.mermaid.security_level = SecurityLevel::Strict;
+        let mermaid = Mermaid::try_init_with_config(&config).unwrap();
+
+        // Test with HTML tags - in strict mode, HTML should be encoded
+        let diagram = r#"graph TD
+    A["<b>Bold</b> <i>Italic</i>"]
+    B["<span>Span text</span>"]
+    A -->|"<em>edge label</em>"| B"#;
+
+        let svg = mermaid.render(diagram).unwrap();
+        insta::assert_snapshot!("security_level_strict", format_html(svg));
+    }
+
+    #[test]
+    fn test_security_level_loose() {
+        let mut config = Config::default();
+        config.mermaid.security_level = SecurityLevel::Loose;
+        let mermaid = Mermaid::try_init_with_config(&config).unwrap();
+
+        // Test with HTML tags - in loose mode, HTML is allowed
+        let diagram = r#"graph TD
+    A["<b>Bold</b> <i>Italic</i>"]
+    B["<span>Styled</span> text"]
+    A -->|"<em>edge</em>"| B"#;
+
+        let svg = mermaid.render(diagram).unwrap();
+        insta::assert_snapshot!("security_level_loose", format_html(svg));
+    }
+
+    #[test]
+    fn test_security_level_antiscript() {
+        let mut config = Config::default();
+        config.mermaid.security_level = SecurityLevel::Antiscript;
+        let mermaid = Mermaid::try_init_with_config(&config).unwrap();
+
+        // Test with HTML tags - antiscript allows HTML but removes script elements
+        let diagram = r#"graph TD
+    A["<b>Bold</b> <strong>Strong</strong>"]
+    B["<i>Italic</i> <em>Emphasis</em>"]
+    A -->|"<span>edge</span>"| B"#;
+
+        let svg = mermaid.render(diagram).unwrap();
+        insta::assert_snapshot!("security_level_antiscript", format_html(svg));
+    }
+
+    #[test]
+    fn test_security_level_sandbox() {
+        let mut config = Config::default();
+        config.mermaid.security_level = SecurityLevel::Sandbox;
+        let mermaid = Mermaid::try_init_with_config(&config).unwrap();
+
+        // Test sandbox mode - all rendering in sandboxed context
+        let diagram = r#"graph TD
+    A["<b>Text</b> in sandbox"]
+    B["Isolated rendering"]
+    A --> B"#;
+
+        let svg = mermaid.render(diagram).unwrap();
+        insta::assert_snapshot!("security_level_sandbox", format_html(svg));
+    }
+
+    /// Format HTML with proper indentation for better readability in snapshots
+    fn format_html(html: impl AsRef<str>) -> String {
+        // Try to format with oxfmt if available
+        let result = Command::new("npx")
+            .arg("oxfmt@latest")
+            .arg("--stdin-filepath")
+            .arg("snapshot.html")
+            .stdin(std::process::Stdio::piped())
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::piped())
+            .spawn();
+
+        match result {
+            Ok(mut child) => {
+                use std::io::Write;
+                if let Some(mut stdin) = child.stdin.take() {
+                    let _ = stdin.write_all(html.as_ref().as_bytes());
+                }
+
+                match child.wait_with_output() {
+                    Ok(output) if output.status.success() => {
+                        String::from_utf8_lossy(&output.stdout).to_string()
+                    }
+                    _ => {
+                        eprintln!("Warning: oxfmt formatting failed, using original HTML");
+                        html.as_ref().to_string()
+                    }
+                }
+            }
+            Err(_) => {
+                eprintln!("Warning: oxfmt not available, using original HTML");
+                html.as_ref().to_string()
+            }
+        }
     }
 }
