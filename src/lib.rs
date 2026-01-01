@@ -128,20 +128,21 @@ fn add_mermaid(content: &str, renderer: &renderer::Mermaid, config: &Config) -> 
                                 .join("\n> ");
                             format!(
                                 r#"> [!IMPORTANT]
-> **Mermaid diagram rendering failed during SSR.**
-> *You are seeing this message because the `on-error: comment` option is enabled.*
+> **Mermaid diagram rendering failed during SSR because:**
+> ```raw
+> {e}
+> ```
 >
-> Error:
-> `{e}`
->
-> Raw diagram:
+> This is the diagram code that caused the error:
 > ```raw
 > {mermaid_code}
 > ```
 >
 > To fix this issue, please follow these steps:
 > - Check your Mermaid code for any syntax errors by pasting it into the [Mermaid Playground](https://mermaid.live/).
-> - Look at the stdout log produced during mdbook build for more details"#,
+> - Look at the stdout log produced during mdbook build for more details
+>
+> <sub><sub>You are seeing this message because the setting `on-error` is `comment` and not `fail`.</sub></sub>"#,
                             )
                         }
                     }
