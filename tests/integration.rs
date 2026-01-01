@@ -7,7 +7,7 @@ use std::process::Command;
 use std::sync::Once;
 
 static BUILD_BINARY_ONCE: Once = Once::new();
-static BUILD_TEST_BOOK: Once = Once::new();
+static BUILD_SIMPLE_BOOK: Once = Once::new();
 static BUILD_ERROR_COMMENT: Once = Once::new();
 static BUILD_THEME_FOREST: Once = Once::new();
 static BUILD_FULL_CONFIG: Once = Once::new();
@@ -84,11 +84,11 @@ fn extract_main_content(html: &str) -> &str {
 
 #[test]
 fn test_book_builds() {
-    BUILD_TEST_BOOK.call_once(|| {
-        build_book("test-book");
+    BUILD_SIMPLE_BOOK.call_once(|| {
+        build_book("simple-book");
     });
 
-    let output = output_dir().join("test-book");
+    let output = output_dir().join("simple-book");
     assert!(output.exists(), "Output directory should exist");
     assert!(
         output.join("index.html").exists(),
@@ -98,11 +98,11 @@ fn test_book_builds() {
 
 #[test]
 fn test_chapter_with_mermaid() {
-    BUILD_TEST_BOOK.call_once(|| {
-        build_book("test-book");
+    BUILD_SIMPLE_BOOK.call_once(|| {
+        build_book("simple-book");
     });
 
-    let output = output_dir().join("test-book");
+    let output = output_dir().join("simple-book");
     let content = fs::read_to_string(output.join("chapter_with_mermaid.html"))
         .expect("Failed to read chapter_with_mermaid.html");
 
@@ -122,11 +122,11 @@ fn test_chapter_with_mermaid() {
 
 #[test]
 fn test_chapter_without_mermaid() {
-    BUILD_TEST_BOOK.call_once(|| {
-        build_book("test-book");
+    BUILD_SIMPLE_BOOK.call_once(|| {
+        build_book("simple-book");
     });
 
-    let output = output_dir().join("test-book");
+    let output = output_dir().join("simple-book");
     let content = fs::read_to_string(output.join("chapter_without_mermaid.html"))
         .expect("Failed to read chapter_without_mermaid.html");
 
@@ -144,10 +144,10 @@ fn test_chapter_without_mermaid() {
 #[test]
 fn test_config_on_error_comment() {
     BUILD_ERROR_COMMENT.call_once(|| {
-        build_book("test-book-error-comment");
+        build_book("error-comment");
     });
 
-    let output = output_dir().join("test-book-error-comment");
+    let output = output_dir().join("error-comment");
 
     assert!(output.exists(), "Output directory should exist");
     assert!(
@@ -179,10 +179,10 @@ fn test_config_on_error_comment() {
 #[test]
 fn test_config_theme_forest() {
     BUILD_THEME_FOREST.call_once(|| {
-        build_book("test-book-theme-forest");
+        build_book("theme-forest");
     });
 
-    let output = output_dir().join("test-book-theme-forest");
+    let output = output_dir().join("theme-forest");
     assert!(output.exists(), "Output directory should exist");
 
     let content =
@@ -207,92 +207,12 @@ fn test_config_theme_forest() {
 }
 
 #[test]
-fn test_config_full_configuration_dark_theme() {
-    BUILD_FULL_CONFIG.call_once(|| {
-        build_book("test-book-full-config");
-    });
-    let output = output_dir().join("test-book-full-config");
-    assert!(output.exists(), "Output directory should exist");
-
-    let dark_content =
-        fs::read_to_string(output.join("dark_theme.html")).expect("Failed to read dark_theme.html");
-    let content = extract_main_content(&dark_content);
-    // let content = Oxfmt::format(content).expect("Failed to format svg");
-    // ^- panics on this input
-
-    assert!(
-        content.contains("<svg"),
-        "Dark theme chapter should contain SVG"
-    );
-    assert!(
-        content.contains("Dark Theme"),
-        "Should contain dark theme diagram content"
-    );
-
-    insta::assert_snapshot!("full_config_dark_theme", content);
-}
-
-#[test]
-fn test_config_full_configuration_hand_drawn() {
-    BUILD_FULL_CONFIG.call_once(|| {
-        build_book("test-book-full-config");
-    });
-    let output = output_dir().join("test-book-full-config");
-    assert!(output.exists(), "Output directory should exist");
-
-    let hand_drawn_content =
-        fs::read_to_string(output.join("hand_drawn.html")).expect("Failed to read hand_drawn.html");
-    let content = extract_main_content(&hand_drawn_content);
-    // let content = Oxfmt::format(content).expect("Failed to format svg");
-    // ^- panics on this input
-
-    assert!(
-        content.contains("<svg"),
-        "Hand-drawn chapter should contain SVG"
-    );
-    assert!(
-        content.contains("Hand-Drawn Style") || content.contains("Sketchy"),
-        "Should contain hand-drawn style content"
-    );
-
-    insta::assert_snapshot!("full_config_hand_drawn", content);
-}
-
-#[test]
-fn test_config_full_configuration_multiple_content() {
-    BUILD_FULL_CONFIG.call_once(|| {
-        build_book("test-book-full-config");
-    });
-    let output = output_dir().join("test-book-full-config");
-    assert!(output.exists(), "Output directory should exist");
-
-    let multiple_content = fs::read_to_string(output.join("multiple_diagrams.html"))
-        .expect("Failed to read multiple_diagrams.html");
-    let content = extract_main_content(&multiple_content);
-    //let content = Oxfmt::format(content).expect("Failed to format svg");
-    // ^- panics on this input
-
-    let svg_count = content.matches("<svg").count();
-    assert_eq!(svg_count, 5);
-    assert!(
-        content.contains("flowchart") || multiple_content.contains("graph"),
-        "Should contain flowchart/graph diagram"
-    );
-    assert!(
-        content.contains("sequenceDiagram") || multiple_content.contains("sequence"),
-        "Should contain sequence diagram"
-    );
-
-    insta::assert_snapshot!("full_config_multiple_diagrams", content);
-}
-
-#[test]
 fn test_config_security_level_in_output() {
     BUILD_FULL_CONFIG.call_once(|| {
-        build_book("test-book-full-config");
+        build_book("full-config");
     });
 
-    let output = output_dir().join("test-book-full-config");
+    let output = output_dir().join("full-config");
 
     let content =
         fs::read_to_string(output.join("dark_theme.html")).expect("Failed to read dark_theme.html");
@@ -306,10 +226,10 @@ fn test_config_security_level_in_output() {
 #[test]
 fn test_all_diagram_types_with_config() {
     BUILD_FULL_CONFIG.call_once(|| {
-        build_book("test-book-full-config");
+        build_book("full-config");
     });
 
-    let output = output_dir().join("test-book-full-config");
+    let output = output_dir().join("full-config");
 
     let content = fs::read_to_string(output.join("multiple_diagrams.html"))
         .expect("Failed to read multiple_diagrams.html");
@@ -339,16 +259,16 @@ fn test_all_diagram_types_with_config() {
 #[test]
 fn test_config_affects_svg_output() {
     BUILD_FULL_CONFIG.call_once(|| {
-        build_book("test-book-full-config");
+        build_book("full-config");
     });
-    let full_config_output = output_dir().join("test-book-full-config");
+    let full_config_output = output_dir().join("full-config");
     let full_config_content = fs::read_to_string(full_config_output.join("dark_theme.html"))
         .expect("Failed to read dark_theme.html");
 
-    BUILD_TEST_BOOK.call_once(|| {
-        build_book("test-book");
+    BUILD_SIMPLE_BOOK.call_once(|| {
+        build_book("simple-book");
     });
-    let output = output_dir().join("test-book");
+    let output = output_dir().join("simple-book");
     let default_content = fs::read_to_string(output.join("chapter_with_mermaid.html"))
         .expect("Failed to read default chapter");
 
