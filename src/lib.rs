@@ -150,7 +150,6 @@ fn add_mermaid(content: &str, renderer: &renderer::Mermaid, config: &Config) -> 
 #[cfg(test)]
 mod test {
     use pretty_assertions::assert_eq;
-    use std::sync::Arc;
 
     use super::{add_mermaid, renderer};
     use crate::config::Config;

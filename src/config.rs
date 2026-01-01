@@ -158,9 +158,9 @@ mod tests {
         insta::assert_snapshot!(script, @r#"
         mermaid.initialize({"securityLevel":"strict","startOnLoad":false});
 
-        window.render = async function(code) {
+        window.render = async function(id, code) {
             try {
-                const { svg } = await mermaid.render('mermaid-diagram-' + Date.now(), code);
+                const { svg } = await mermaid.render(id, code);
                 return svg;
             } catch (error) {
                 console.error('Mermaid rendering error:', error);
@@ -181,9 +181,9 @@ mod tests {
         insta::assert_snapshot!(script, @r#"
         mermaid.initialize({"securityLevel":"strict","startOnLoad":false,"look":"hand-drawn"});
 
-        window.render = async function(code) {
+        window.render = async function(id, code) {
             try {
-                const { svg } = await mermaid.render('mermaid-diagram-' + Date.now(), code);
+                const { svg } = await mermaid.render(id, code);
                 return svg;
             } catch (error) {
                 console.error('Mermaid rendering error:', error);
@@ -201,9 +201,9 @@ mod tests {
         insta::assert_snapshot!(script, @r#"
         mermaid.initialize({"securityLevel":"antiscript","startOnLoad":false});
 
-        window.render = async function(code) {
+        window.render = async function(id, code) {
             try {
-                const { svg } = await mermaid.render('mermaid-diagram-' + Date.now(), code);
+                const { svg } = await mermaid.render(id, code);
                 return svg;
             } catch (error) {
                 console.error('Mermaid rendering error:', error);

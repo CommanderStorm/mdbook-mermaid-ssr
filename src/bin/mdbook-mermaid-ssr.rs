@@ -45,8 +45,8 @@ fn handle_preprocessing() -> Result<(), Error> {
     let (ctx, book) = mdbook_preprocessor::parse_input(io::stdin())?;
 
     if ctx.mdbook_version != mdbook_preprocessor::MDBOOK_VERSION {
-        log::error!(
-            "Warning: The mdbook-mermaid preprocessor was built against version \
+        log::warn!(
+            "The mdbook-mermaid preprocessor was built against version \
              {our_ver} of mdbook, but we're being called from version {ctx_ver}",
             our_ver = mdbook_preprocessor::MDBOOK_VERSION,
             ctx_ver = ctx.mdbook_version
