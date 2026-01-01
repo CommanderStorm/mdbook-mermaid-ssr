@@ -377,7 +377,7 @@ A --> B
             "Expected success when on_error is set to comment"
         );
         let output = result.unwrap();
-        assert!(output.contains("<!-- Mermaid rendering error:"));
-        assert!(output.contains("mermaid-error"));
+        assert!(output.contains("[!IMPORTANT]"));
+        assert!(output.contains("Mermaid rendering error"));
     }
 }
