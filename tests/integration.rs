@@ -44,15 +44,13 @@ fn format_html(html: &str) -> String {
                 Ok(output) if output.status.success() => {
                     String::from_utf8_lossy(&output.stdout).to_string()
                 }
-                _ => {
-                    eprintln!("Warning: oxfmt formatting failed, using original HTML");
-                    html.to_string()
+                Err(e) => {
+                    panic!("oxfmt formatting failed, using original HTML because {e}");
                 }
             }
         }
-        Err(_) => {
-            eprintln!("Warning: oxfmt not available, using original HTML");
-            html.to_string()
+        Err(e) => {
+            panic!("Warning: oxfmt not available, using original HTML because {e}");
         }
     }
 }
