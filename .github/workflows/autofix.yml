@@ -13,13 +13,14 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with: { persist-credentials: false }
 
+      # .rs files
       - run: cargo fmt
 
+      # update the local version of mermaid.js if necessary
       - name: Setup Node.js
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
           node-version: '24'
-
       - name: Update mermaid.js if nessesary
         id: mermaid_check
         run: |
@@ -32,17 +33,7 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Sync version from Cargo.toml to SECURITY.md
-        run: |
-          VERSION=$(grep '^version = ' Cargo.toml | head -n1 | cut -d'"' -f2)
-          # Calculate padding to maintain column width of 7 characters (version column)
-          VERSION_LEN=${#VERSION}
-          PADDING_LEN=$((7 - VERSION_LEN))
-          # Ensure padding length is not negative to avoid printf issues
-          if [ "$PADDING_LEN" -lt 0 ]; then PADDING_LEN=0; fi
-          PADDING=$(printf '%*s' "$PADDING_LEN" '')
-          sed -i "s/| [0-9]\+\.[0-9]\+\.[0-9]\+ \+| :white_check_mark: |/| $VERSION$PADDING | :white_check_mark: |/" SECURITY.md
-
+      # fix changes coming from the new mermaid.js doing things differently
       - uses: taiki-e/install-action@e0db384ad69f5ba2c6dd0129d8934e0d0ba465c1 # v2.65.10
         if: steps.mermaid_check.outputs.changed == 'true'
         with: { tool: mdbook,cargo-insta }
@@ -56,8 +47,21 @@ jobs:
           INSTA_FORCE_PASS: 1
           INSTA_UPDATE: always
 
+      # format cargo.toml
       - uses: taiki-e/install-action@e0db384ad69f5ba2c6dd0129d8934e0d0ba465c1 # v2.65.10
         with: { tool: cargo-sort }
       - run: cargo sort
+
+      # use consistent versioning for our crate
+      - name: Sync version from Cargo.toml to SECURITY.md
+        run: |
+          VERSION=$(grep '^version = ' Cargo.toml | head -n1 | cut -d'"' -f2)
+          # Calculate padding to maintain column width of 7 characters (version column)
+          VERSION_LEN=${#VERSION}
+          PADDING_LEN=$((7 - VERSION_LEN))
+          # Ensure padding length is not negative to avoid printf issues
+          if [ "$PADDING_LEN" -lt 0 ]; then PADDING_LEN=0; fi
+          PADDING=$(printf '%*s' "$PADDING_LEN" '')
+          sed -i "s/| [0-9]\+\.[0-9]\+\.[0-9]\+ \+| :white_check_mark: |/| $VERSION$PADDING | :white_check_mark: |/" SECURITY.md
 
       - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27 # v1.3.2
