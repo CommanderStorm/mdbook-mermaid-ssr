@@ -16,7 +16,7 @@ pub const DEFAULT_TIMEOUT_SECS: Duration = Duration::from_secs(30);
 /// diagrams
 #[derive(Clone)]
 pub struct Mermaid {
-    _browser: Browser,
+    browser: Browser,
     tab: Arc<Tab>,
 }
 
@@ -63,10 +63,7 @@ impl Mermaid {
         let init_script = config.build_mermaid_init_script();
         tab.evaluate(&init_script, false)?;
 
-        Ok(Self {
-            _browser: browser,
-            tab,
-        })
+        Ok(Self { browser, tab })
     }
 
     /// Renders a diagram
@@ -105,6 +102,10 @@ impl Mermaid {
         }
 
         Ok(svg)
+    }
+    /// Gives access to the underlying browser instance
+    pub fn browser(&self) -> &Browser {
+        &self.browser
     }
 }
 
