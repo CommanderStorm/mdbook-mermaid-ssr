@@ -1,9 +1,10 @@
+use anyhow::bail;
 use clap::{Parser, Subcommand};
 use mdbook_mermaid_ssr::{Mermaid, config::Config};
 use mdbook_preprocessor::Preprocessor;
 use mdbook_preprocessor::errors::Error;
 
-use std::{io, process};
+use std::io;
 
 #[derive(Parser)]
 #[command(
@@ -25,19 +26,14 @@ enum Commands {
     },
 }
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
 
     let cli = Cli::parse();
 
     match cli.command {
         Some(Commands::Supports { renderer }) => handle_supports(&renderer),
-        None => {
-            if let Err(e) = handle_preprocessing() {
-                log::error!("Cannot preprocess mermaid diagrams because {e}");
-                process::exit(1);
-            }
-        }
+        None => handle_preprocessing(),
     }
 }
 
@@ -62,6 +58,7 @@ fn handle_preprocessing() -> Result<(), Error> {
     Ok(())
 }
 
+<<<<<<< HEAD
 fn handle_supports(renderer: &str) -> ! {
     // For the supports check, we don't need to parse config, just check if we can initialize
     let preprocessor = match Mermaid::new(Config::default()) {
@@ -70,13 +67,15 @@ fn handle_supports(renderer: &str) -> ! {
             // If we can't initialize, we can't support any renderer
             process::exit(1);
         }
+=======
+fn handle_supports(renderer: &str) -> anyhow::Result<()> {
+    let Ok(preprocessor) = Mermaid::new() else {
+        bail!("can't mermaid renderer for given renderer");
+>>>>>>> main
     };
-    let supported = preprocessor.supports_renderer(renderer);
-
-    // Signal whether the renderer is supported by exiting with 1 or 0.
-    if let Ok(true) = supported {
-        process::exit(0);
-    } else {
-        process::exit(1);
+    let supported = preprocessor.supports_renderer(renderer).is_ok_and(|s| s);
+    if !supported {
+        bail!("renderer not supported, but chrome can be initialized, so this could be possible");
     }
+    Ok(())
 }

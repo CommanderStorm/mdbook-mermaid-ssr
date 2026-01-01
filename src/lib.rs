@@ -10,7 +10,8 @@ use config::{Config, ErrorHandling};
 use mdbook_preprocessor::book::{Book, BookItem};
 use mdbook_preprocessor::errors::Result;
 use mdbook_preprocessor::{Preprocessor, PreprocessorContext};
-use pulldown_cmark::{CodeBlockKind::*, Event, Options, Parser, Tag, TagEnd};
+use pulldown_cmark::{CodeBlockKind::Fenced, Event, Options, Parser, Tag, TagEnd};
+use std::sync::Arc;
 
 pub struct Mermaid {
     renderer: renderer::Mermaid,
@@ -26,7 +27,7 @@ impl Mermaid {
 }
 
 impl Preprocessor for Mermaid {
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         "mermaid-ssr"
     }
 
@@ -48,7 +49,7 @@ impl Preprocessor for Mermaid {
             }
         });
 
-        res.unwrap_or(Ok(())).map(|_| book)
+        res.unwrap_or(Ok(())).map(|()| book)
     }
 
     fn supports_renderer(&self, renderer: &str) -> Result<bool> {
@@ -56,7 +57,8 @@ impl Preprocessor for Mermaid {
     }
 }
 
-fn add_mermaid(content: &str, renderer: &renderer::Mermaid, config: &Config) -> Result<String> {
+#[expect(clippy::unnecessary_wraps)]
+fn add_mermaid(content: &str, renderer: &renderer::Mermaid) -> Result<String> {
     let mut mermaid_content = String::new();
     let mut in_mermaid_block = false;
 

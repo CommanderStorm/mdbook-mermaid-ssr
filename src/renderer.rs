@@ -51,15 +51,46 @@ impl Mermaid {
         let html_payload = include_str!("../payload/index.html");
 
         let tab = browser.new_tab()?;
+<<<<<<< HEAD
         tab.set_default_timeout(config.timeout);
         tab.navigate_to(&format!("data:text/html;charset=utf-8,{html_payload}"))?;
+=======
+        tab.navigate_to(&format!("data:text/html;charset=utf-8,{html_payload}"))?;
+
+>>>>>>> main
         // Load mermaid library
         tab.evaluate(mermaid_js, false)?;
         // Initialize mermaid with configured options and set up render function
         let init_script = config.build_mermaid_init_script();
         tab.evaluate(&init_script, false)?;
 
+<<<<<<< HEAD
         Ok(Self { browser, tab })
+=======
+        // Initialize mermaid and set up render function in global scope
+        let init_script = r"mermaid.initialize({
+    startOnLoad: false,
+    theme: 'default',
+    securityLevel: 'loose'
+});
+
+window.render = async function(code) {
+    try {
+        const { svg } = await mermaid.render('mermaid-diagram-' + Date.now(), code);
+        return svg;
+    } catch (error) {
+        console.error('Mermaid rendering error:', error);
+        return null;
+    }
+};
+";
+        tab.evaluate(init_script, false)?;
+
+        Ok(Self {
+            _browser: browser,
+            tab,
+        })
+>>>>>>> main
     }
 
     /// Renders a diagram
@@ -97,6 +128,7 @@ impl Mermaid {
             bail!("Failed to compile Mermaid diagram: empty result");
         }
 
+<<<<<<< HEAD
         Ok(svg)
     }
     /// Gives access to the underlying browser instance
@@ -150,6 +182,9 @@ impl Oxfmt {
                 bail!("oxfmt not available, using original HTML because {e}");
             }
         }
+=======
+        Ok(slice.clone())
+>>>>>>> main
     }
 }
 
