@@ -11,10 +11,9 @@ use mdbook_preprocessor::book::{Book, BookItem};
 use mdbook_preprocessor::errors::Result;
 use mdbook_preprocessor::{Preprocessor, PreprocessorContext};
 use pulldown_cmark::{CodeBlockKind::*, Event, Options, Parser, Tag, TagEnd};
-use std::sync::Arc;
 
 pub struct Mermaid {
-    renderer: Arc<renderer::Mermaid>,
+    renderer: renderer::Mermaid,
     config: Config,
 }
 
@@ -22,10 +21,7 @@ impl Mermaid {
     pub fn new(config: Config) -> Result<Self> {
         let renderer = renderer::Mermaid::try_init_with_config(&config)
             .context("Failed to initialize SSR renderer. Chrome/Chromium must be installed.")?;
-        Ok(Self {
-            renderer: Arc::new(renderer),
-            config,
-        })
+        Ok(Self { renderer, config })
     }
 }
 
@@ -60,11 +56,7 @@ impl Preprocessor for Mermaid {
     }
 }
 
-fn add_mermaid(
-    content: &str,
-    renderer: &Arc<renderer::Mermaid>,
-    config: &Config,
-) -> Result<String> {
+fn add_mermaid(content: &str, renderer: &renderer::Mermaid, config: &Config) -> Result<String> {
     let mut mermaid_content = String::new();
     let mut in_mermaid_block = false;
 
@@ -177,7 +169,7 @@ A --> B
 Text
 "#;
 
-        let result = add_mermaid(content, &Arc::new(mermaid), &config).unwrap();
+        let result = add_mermaid(content, &mermaid, &config).unwrap();
 
         // Check that SVG was generated
         assert!(result.contains("<svg"));
@@ -207,10 +199,7 @@ Text
 | Row 1  | Row 2  |
 "#;
 
-        assert_eq!(
-            expected,
-            add_mermaid(content, &Arc::new(mermaid), &config).unwrap()
-        );
+        assert_eq!(expected, add_mermaid(content, &mermaid, &config).unwrap());
     }
 
     #[test]
@@ -238,10 +227,7 @@ Text
 </del>
 "#;
 
-        assert_eq!(
-            expected,
-            add_mermaid(content, &Arc::new(mermaid), &config).unwrap()
-        );
+        assert_eq!(expected, add_mermaid(content, &mermaid, &config).unwrap());
     }
 
     #[test]
@@ -269,10 +255,7 @@ Text
 2. paragraph 2
 "#;
 
-        assert_eq!(
-            expected,
-            add_mermaid(content, &Arc::new(mermaid), &config).unwrap()
-        );
+        assert_eq!(expected, add_mermaid(content, &mermaid, &config).unwrap());
     }
 
     #[test]
@@ -292,7 +275,7 @@ classDiagram
 hello
 "#;
 
-        let result = add_mermaid(content, &Arc::new(mermaid), &config).unwrap();
+        let result = add_mermaid(content, &mermaid, &config).unwrap();
 
         // Check that SVG was generated and contains the interface markers
         assert!(result.contains("<svg"));
@@ -315,7 +298,7 @@ A --> B
 Text
 "#;
 
-        let result = add_mermaid(content, &Arc::new(mermaid), &config).unwrap();
+        let result = add_mermaid(content, &mermaid, &config).unwrap();
 
         // Check that SVG was generated
         assert!(result.contains("<svg"));
@@ -331,7 +314,7 @@ Text
         let config = Config::default();
         let content = "# Chapter\r\n\r\n````mermaid\r\n\r\ngraph TD\r\nA --> B\r\n````";
 
-        let result = add_mermaid(content, &Arc::new(mermaid), &config).unwrap();
+        let result = add_mermaid(content, &mermaid, &config).unwrap();
 
         // Check that SVG was generated
         assert!(result.contains("<svg"));
@@ -352,7 +335,7 @@ A --> B
 ```
 "#;
 
-        let result = add_mermaid(content, &Arc::new(mermaid), &config);
+        let result = add_mermaid(content, &mermaid, &config);
         assert!(
             result.is_err(),
             "Expected error when on_error is set to fail"
@@ -373,7 +356,7 @@ A --> B
 ```
 "#;
 
-        let result = add_mermaid(content, &Arc::new(mermaid), &config);
+        let result = add_mermaid(content, &mermaid, &config);
         assert!(
             result.is_ok(),
             "Expected success when on_error is set to comment"

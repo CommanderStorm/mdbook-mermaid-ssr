@@ -34,7 +34,7 @@ fn main() {
         Some(Commands::Supports { renderer }) => handle_supports(&renderer),
         None => {
             if let Err(e) = handle_preprocessing() {
-                log::error!("Cannot preporocess mermaid diagrams because {e}");
+                log::error!("Cannot preprocess mermaid diagrams because {e}");
                 process::exit(1);
             }
         }

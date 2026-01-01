@@ -78,7 +78,7 @@ impl Mermaid {
     /// let svg = mermaid.render("graph TB\na-->b").expect("Unable to render!");
     /// ```
     pub fn render(&self, input: &str) -> Result<String> {
-        let id = gxhash::gxhash32(input.as_bytes(), 0);
+        let id = fxhash::hash(input);
         // Call the async render function and await its result
         let script = format!(
             "(async () => {{ return await window.render('mermaid-diagram-{id}', '{}'); }})()",
