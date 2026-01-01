@@ -87,7 +87,7 @@ That's it! No JavaScript files or additional configuration needed. Diagrams are 
 ```toml
 [preprocessor.mermaid-ssr]
 # Timeout for rendering operations (default: 30s)
-timeout = 30s
+timeout = "30s"
 
 # Error handling: "fail" or "comment" (default: "comment")
 # - "fail": Build fails on rendering errors
