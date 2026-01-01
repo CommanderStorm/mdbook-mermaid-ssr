@@ -4,9 +4,9 @@ expression: formatted
 ---
 <h1 id="regular-chapter"><a class="header" href="#regular-chapter">Regular Chapter</a></h1>
 <p>This chapter has no Mermaid diagrams.</p>
-<pre class="playground"><code class="language-rust">fn main() {
+<pre><pre class="playground"><code class="language-rust">fn main() {
     println!("Hello, world!");
-}</code></pre>
+}</code></pre></pre>
 <p>Just regular markdown with code blocks.</p>
 <h2 id="a-subsection"><a class="header" href="#a-subsection">A Subsection</a></h2>
 <p>More text here.</p>
