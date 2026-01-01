@@ -1,0 +1,9 @@
+[book]
+title = "Test Book with Forest Theme"
+authors = ["Test Author"]
+
+[preprocessor.mermaid-ssr]
+theme = "forest"
+
+[output.html]
+search.enable = false

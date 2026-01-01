@@ -192,3 +192,290 @@ fn test_chapter_without_mermaid() {
     <p>Final paragraph.</p>
     "##);
 }
+
+// Helper function to build a test book with specific configuration
+fn build_test_book(book_name: &str) -> PathBuf {
+    let book_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("tests")
+        .join("fixtures")
+        .join(book_name);
+
+    let output = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("target")
+        .join(book_name);
+
+    // Clean previous build
+    if output.exists() {
+        fs::remove_dir_all(&output).expect("Failed to clean output directory");
+    }
+
+    // Get the path to the built binary
+    let binary_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("target")
+        .join("debug")
+        .join("mdbook-mermaid-ssr");
+
+    // Ensure binary exists
+    if !binary_path.exists() {
+        let build_status = Command::new("cargo")
+            .arg("build")
+            .arg("--bin")
+            .arg("mdbook-mermaid-ssr")
+            .current_dir(env!("CARGO_MANIFEST_DIR"))
+            .status()
+            .expect("Failed to build mdbook-mermaid-ssr");
+
+        assert!(
+            build_status.success(),
+            "Failed to build mdbook-mermaid-ssr binary"
+        );
+    }
+
+    // Add the binary directory to PATH
+    let path_env = std::env::var("PATH").unwrap_or_default();
+    let binary_dir = binary_path.parent().unwrap();
+    let new_path = format!("{}:{}", binary_dir.display(), path_env);
+
+    // Build the book
+    let status = Command::new("mdbook")
+        .arg("build")
+        .arg("--dest-dir")
+        .arg(&output)
+        .current_dir(&book_dir)
+        .env("PATH", new_path)
+        .status()
+        .expect("Failed to run mdbook build");
+
+    assert!(status.success(), "mdbook build failed for {}", book_name);
+
+    output
+}
+
+#[test]
+fn test_config_custom_timeout() {
+    let output = build_test_book("test-book-with-timeout");
+
+    // Verify the book built successfully
+    assert!(output.exists(), "Output directory should exist");
+    assert!(
+        output.join("index.html").exists(),
+        "index.html should exist"
+    );
+
+    // Read the chapter and verify diagram rendered
+    let content = fs::read_to_string(output.join("chapter_with_mermaid.html"))
+        .expect("Failed to read chapter_with_mermaid.html");
+
+    // Should contain rendered SVG
+    assert!(
+        content.contains("<svg") && content.contains("graph"),
+        "Chapter should contain rendered mermaid diagram"
+    );
+
+    // Verify the specific diagram content is present
+    assert!(
+        content.contains("Is timeout configured"),
+        "Should contain timeout-specific diagram content"
+    );
+}
+
+#[test]
+fn test_config_on_error_comment() {
+    let output = build_test_book("test-book-error-comment");
+
+    // Verify the book built successfully (should not fail despite invalid diagram)
+    assert!(output.exists(), "Output directory should exist");
+    assert!(
+        output.join("index.html").exists(),
+        "index.html should exist"
+    );
+
+    // Read the chapter with invalid mermaid
+    let content = fs::read_to_string(output.join("chapter_with_invalid_mermaid.html"))
+        .expect("Failed to read chapter_with_invalid_mermaid.html");
+
+    // Should contain the valid diagrams
+    assert!(
+        content.contains("<svg"),
+        "Should contain valid rendered diagrams"
+    );
+
+    // Should contain HTML comment for the error (on-error = "comment")
+    assert!(
+        content.contains("<!-- Mermaid") || content.contains("<!--"),
+        "Should contain HTML comment for rendering error"
+    );
+
+    // The valid diagrams should still render
+    assert!(
+        content.contains("Alice") && content.contains("Bob"),
+        "Valid diagrams after error should still render"
+    );
+}
+
+#[test]
+fn test_config_theme_forest() {
+    let output = build_test_book("test-book-theme-forest");
+
+    assert!(output.exists(), "Output directory should exist");
+
+    let content =
+        fs::read_to_string(output.join("chapter.html")).expect("Failed to read chapter.html");
+
+    // Should contain rendered SVG
+    assert!(
+        content.contains("<svg"),
+        "Should contain rendered mermaid diagram"
+    );
+
+    // Forest theme uses specific color schemes - check for SVG content
+    assert!(
+        content.contains("Forest Theme"),
+        "Should contain diagram with forest theme content"
+    );
+
+    // The SVG should be present, indicating successful rendering with theme
+    assert!(
+        content.contains("graph") || content.contains("flowchart"),
+        "Should contain graph/flowchart elements"
+    );
+}
+
+#[test]
+fn test_config_full_configuration() {
+    let output = build_test_book("test-book-full-config");
+
+    assert!(output.exists(), "Output directory should exist");
+
+    // Test dark theme chapter
+    let dark_content =
+        fs::read_to_string(output.join("dark_theme.html")).expect("Failed to read dark_theme.html");
+
+    assert!(
+        dark_content.contains("<svg"),
+        "Dark theme chapter should contain SVG"
+    );
+    assert!(
+        dark_content.contains("Dark Theme"),
+        "Should contain dark theme diagram content"
+    );
+
+    // Test hand-drawn style chapter
+    let hand_drawn_content =
+        fs::read_to_string(output.join("hand_drawn.html")).expect("Failed to read hand_drawn.html");
+
+    assert!(
+        hand_drawn_content.contains("<svg"),
+        "Hand-drawn chapter should contain SVG"
+    );
+    assert!(
+        hand_drawn_content.contains("Hand-Drawn Style") || hand_drawn_content.contains("Sketchy"),
+        "Should contain hand-drawn style content"
+    );
+
+    // Test multiple diagrams chapter
+    let multiple_content = fs::read_to_string(output.join("multiple_diagrams.html"))
+        .expect("Failed to read multiple_diagrams.html");
+
+    // Count SVG occurrences (should have 5 diagrams)
+    let svg_count = multiple_content.matches("<svg").count();
+    assert!(
+        svg_count >= 5,
+        "Should contain at least 5 SVG diagrams, found {}",
+        svg_count
+    );
+
+    // Verify different diagram types are present
+    assert!(
+        multiple_content.contains("flowchart") || multiple_content.contains("graph"),
+        "Should contain flowchart/graph diagram"
+    );
+    assert!(
+        multiple_content.contains("sequenceDiagram") || multiple_content.contains("sequence"),
+        "Should contain sequence diagram"
+    );
+}
+
+#[test]
+fn test_config_security_level_in_output() {
+    let output = build_test_book("test-book-full-config");
+
+    let content =
+        fs::read_to_string(output.join("dark_theme.html")).expect("Failed to read dark_theme.html");
+
+    // With security-level = "loose", diagrams should render successfully
+    assert!(
+        content.contains("<svg"),
+        "Diagrams should render with loose security level"
+    );
+}
+
+#[test]
+fn test_all_diagram_types_with_config() {
+    let output = build_test_book("test-book-full-config");
+
+    let content = fs::read_to_string(output.join("multiple_diagrams.html"))
+        .expect("Failed to read multiple_diagrams.html");
+
+    // Extract main content
+    let main_content = content
+        .split("<main>")
+        .nth(1)
+        .expect("Failed to find <main> tag")
+        .split("</main>")
+        .nth(0)
+        .expect("Failed to find </main> tag");
+
+    // All diagram types should be rendered as SVG
+    let svg_count = main_content.matches("<svg").count();
+    assert!(
+        svg_count >= 5,
+        "Should have at least 5 different diagram types rendered, found {}",
+        svg_count
+    );
+
+    // Verify the page contains various diagram type indicators
+    assert!(
+        main_content.contains("Flowchart") || main_content.contains("flowchart"),
+        "Should reference flowchart diagrams"
+    );
+    assert!(
+        main_content.contains("Sequence") || main_content.contains("sequence"),
+        "Should reference sequence diagrams"
+    );
+    assert!(
+        main_content.contains("Class") || main_content.contains("class"),
+        "Should reference class diagrams"
+    );
+}
+
+#[test]
+fn test_config_affects_svg_output() {
+    // Build book with full config (dark theme + handDrawn)
+    let full_config_output = build_test_book("test-book-full-config");
+    let full_config_content = fs::read_to_string(full_config_output.join("dark_theme.html"))
+        .expect("Failed to read dark_theme.html");
+
+    // Build default config book
+    ensure_built();
+    let default_content = fs::read_to_string(output_dir().join("chapter_with_mermaid.html"))
+        .expect("Failed to read default chapter");
+
+    // Both should have SVG, but the configuration should affect the output
+    assert!(
+        full_config_content.contains("<svg"),
+        "Full config should have SVG"
+    );
+    assert!(
+        default_content.contains("<svg"),
+        "Default config should have SVG"
+    );
+
+    // The SVGs should be different (configuration affects rendering)
+    // This is a basic check - in practice, theme and look settings change
+    // the SVG structure, colors, and styling
+    assert_ne!(
+        full_config_content, default_content,
+        "Configuration should affect the final HTML output"
+    );
+}

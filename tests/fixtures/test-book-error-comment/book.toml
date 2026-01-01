@@ -1,0 +1,9 @@
+[book]
+title = "Test Book with Error Comment Handling"
+authors = ["Test Author"]
+
+[preprocessor.mermaid-ssr]
+on-error = "comment"
+
+[output.html]
+search.enable = false
