@@ -56,4 +56,8 @@ jobs:
           INSTA_FORCE_PASS: 1
           INSTA_UPDATE: always
 
+      - uses: taiki-e/install-action@e0db384ad69f5ba2c6dd0129d8934e0d0ba465c1 # v2.65.10
+        with: { tool: cargo-sort }
+      - run: cargo sort
+
       - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27 # v1.3.2
