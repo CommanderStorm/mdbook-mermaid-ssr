@@ -252,7 +252,7 @@ fn test_config_full_configuration_hand_drawn() {
         content.contains("Hand-Drawn Style") || content.contains("Sketchy"),
         "Should contain hand-drawn style content"
     );
-    
+
     insta::assert_snapshot!("full_config_hand_drawn", content);
 }
 
