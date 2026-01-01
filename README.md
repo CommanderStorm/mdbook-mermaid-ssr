@@ -91,7 +91,7 @@ timeout = "30s"
 
 # Error handling: "fail" (default) or "comment"
 # - "fail": Build fails on rendering errors
-# - "comment": Errors are emitted as HTML comments
+# - "comment": Errors are emitted as Markdown Annotations
 on-error = "comment"
 
 # Custom path to Chrome/Chromium executable (optional)
