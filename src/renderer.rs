@@ -132,19 +132,19 @@ impl Oxfmt {
                     }
                     Ok(output) => {
                         bail!(
-                            r"oxfmt formatting failed, using original HTML because
--------
-STDERR:
+                            r"oxfmt formatting failed with
+::group::stdout
 {}
--------
-STDOUT:
-{}",
-                            String::from_utf8_lossy(&output.stderr),
-                            String::from_utf8_lossy(&output.stdout)
+::endgroup::
+::group::stderr
+{}
+::endgroup::",
+                            String::from_utf8_lossy(&output.stdout),
+                            String::from_utf8_lossy(&output.stderr)
                         );
                     }
                     Err(e) => {
-                        bail!("oxfmt formatting failed, using original HTML because {e}");
+                        bail!("oxfmt formatting failed because {e}");
                     }
                 }
             }
