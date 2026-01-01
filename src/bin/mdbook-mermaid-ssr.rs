@@ -58,20 +58,10 @@ fn handle_preprocessing() -> Result<(), Error> {
     Ok(())
 }
 
-<<<<<<< HEAD
-fn handle_supports(renderer: &str) -> ! {
-    // For the supports check, we don't need to parse config, just check if we can initialize
-    let preprocessor = match Mermaid::new(Config::default()) {
-        Ok(p) => p,
-        Err(_) => {
-            // If we can't initialize, we can't support any renderer
-            process::exit(1);
-        }
-=======
 fn handle_supports(renderer: &str) -> anyhow::Result<()> {
-    let Ok(preprocessor) = Mermaid::new() else {
+    // For the supports check, we don't need to parse config, just check if we can initialize
+    let Ok(preprocessor) = Mermaid::new(Config::default()) else {
         bail!("can't mermaid renderer for given renderer");
->>>>>>> main
     };
     let supported = preprocessor.supports_renderer(renderer).is_ok_and(|s| s);
     if !supported {

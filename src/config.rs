@@ -19,7 +19,7 @@ pub struct Config {
     /// Custom path to Chrome/Chromium executable
     pub chrome_path: Option<PathBuf>,
 
-    /// Mermaid configuration options (will be passed to mermaid.initialize())
+    /// Mermaid configuration options (will be passed to `mermaid.initialize({..})`)
     #[serde(flatten)]
     pub mermaid: MermaidConfig,
 }
@@ -40,7 +40,7 @@ fn default_timeout() -> Duration {
 }
 
 /// Mermaid initialization options
-/// See: https://mermaid.js.org/config/setup/modules/mermaidAPI.html#mermaidapi-configuration-defaults
+/// See: <https://mermaid.js.org/config/setup/modules/mermaidAPI.html#mermaidapi-configuration-defaults>
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "kebab-case"))]
 pub struct MermaidConfig {
@@ -74,7 +74,7 @@ pub enum SecurityLevel {
 }
 
 impl Config {
-    /// Parse configuration from PreprocessorContext
+    /// Parse configuration from `PreprocessorContext`
     pub fn from_context(ctx: &PreprocessorContext) -> Self {
         const NAME: &str = "mermaid-ssr";
 
@@ -89,6 +89,7 @@ impl Config {
     }
 
     /// Build the mermaid initialization script with all configured options
+    #[must_use]
     pub fn build_mermaid_init_script(&self) -> String {
         // Clone and convert additional kebab-case keys to camelCase
         let mut mermaid_config = self.mermaid.clone();
@@ -103,7 +104,7 @@ impl Config {
             serde_json::to_string(&mermaid_config).expect("Failed to serialize mermaid config");
 
         format!(
-            r#"mermaid.initialize({config_json});
+            r"mermaid.initialize({config_json});
 
 window.render = async function(id, code) {{
     try {{
@@ -113,7 +114,7 @@ window.render = async function(id, code) {{
         console.error('Mermaid rendering error:', error);
         return null;
     }}
-}};"#
+}};"
         )
     }
 }

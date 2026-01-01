@@ -11,7 +11,6 @@ use mdbook_preprocessor::book::{Book, BookItem};
 use mdbook_preprocessor::errors::Result;
 use mdbook_preprocessor::{Preprocessor, PreprocessorContext};
 use pulldown_cmark::{CodeBlockKind::Fenced, Event, Options, Parser, Tag, TagEnd};
-use std::sync::Arc;
 
 pub struct Mermaid {
     renderer: renderer::Mermaid,
@@ -57,8 +56,7 @@ impl Preprocessor for Mermaid {
     }
 }
 
-#[expect(clippy::unnecessary_wraps)]
-fn add_mermaid(content: &str, renderer: &renderer::Mermaid) -> Result<String> {
+fn add_mermaid(content: &str, renderer: &renderer::Mermaid, config: &Config) -> Result<String> {
     let mut mermaid_content = String::new();
     let mut in_mermaid_block = false;
 
@@ -129,7 +127,7 @@ fn add_mermaid(content: &str, renderer: &renderer::Mermaid) -> Result<String> {
                                 .collect::<Vec<_>>()
                                 .join("\n> ");
                             format!(
-                                r#"> [!IMPORTANT]
+                                r"> [!IMPORTANT]
 > **Mermaid diagram rendering failed during SSR because:**
 > ```raw
 > {e}
@@ -144,7 +142,7 @@ fn add_mermaid(content: &str, renderer: &renderer::Mermaid) -> Result<String> {
 > - Check your Mermaid code for any syntax errors by pasting it into the [Mermaid Playground](https://mermaid.live/).
 > - Look at the stdout log produced during mdbook build for more details
 >
-> <sub><sub>You are seeing this message because the setting `on-error` is `comment` and not `fail`.</sub></sub>"#,
+> <sub><sub>You are seeing this message because the setting `on-error` is `comment` and not `fail`.</sub></sub>",
                             )
                         }
                     }
