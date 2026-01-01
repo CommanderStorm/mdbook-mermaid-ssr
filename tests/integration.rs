@@ -187,6 +187,8 @@ fn test_config_theme_forest() {
 
     let content =
         fs::read_to_string(output.join("chapter.html")).expect("Failed to read chapter.html");
+    let content = extract_main_content(&content);
+    let content = Oxfmt::format(content).expect("Failed to format svg");
 
     assert!(
         content.contains("<svg"),
@@ -201,39 +203,46 @@ fn test_config_theme_forest() {
         "Should contain graph/flowchart elements"
     );
 
-    let main_content = extract_main_content(&content);
-    let formatted = Oxfmt::format(main_content).expect("Failed to format SVG");
-    insta::assert_snapshot!("theme_forest", formatted);
+    insta::assert_snapshot!("theme_forest", content);
 }
 
 #[test]
-#[ignore]
-fn test_config_full_configuration() {
+fn test_config_full_configuration_dark_theme() {
     BUILD_FULL_CONFIG.call_once(|| {
         build_book("test-book-full-config");
     });
-
     let output = output_dir().join("test-book-full-config");
     assert!(output.exists(), "Output directory should exist");
 
     let dark_content =
         fs::read_to_string(output.join("dark_theme.html")).expect("Failed to read dark_theme.html");
+    let content = extract_main_content(&dark_content);
+    let content = Oxfmt::format(content).expect("Failed to format svg");
 
     assert!(
-        dark_content.contains("<svg"),
+        content.contains("<svg"),
         "Dark theme chapter should contain SVG"
     );
     assert!(
-        dark_content.contains("Dark Theme"),
+        content.contains("Dark Theme"),
         "Should contain dark theme diagram content"
     );
 
-    let dark_main = extract_main_content(&dark_content);
-    let dark_formatted = Oxfmt::format(dark_main).expect("Failed to format SVG");
-    insta::assert_snapshot!("full_config_dark_theme", dark_formatted);
+    insta::assert_snapshot!("full_config_dark_theme", content);
+}
+
+#[test]
+fn test_config_full_configuration_hand_drawn() {
+    BUILD_FULL_CONFIG.call_once(|| {
+        build_book("test-book-full-config");
+    });
+    let output = output_dir().join("test-book-full-config");
+    assert!(output.exists(), "Output directory should exist");
 
     let hand_drawn_content =
         fs::read_to_string(output.join("hand_drawn.html")).expect("Failed to read hand_drawn.html");
+    let content = extract_main_content(&hand_drawn_content);
+    let content = Oxfmt::format(content).expect("Failed to format svg");
 
     assert!(
         hand_drawn_content.contains("<svg"),
@@ -245,29 +254,34 @@ fn test_config_full_configuration() {
     );
 
     let hand_drawn_main = extract_main_content(&hand_drawn_content);
-    let hand_drawn_formatted = Oxfmt::format(hand_drawn_main).expect("Failed to format svg");
-    insta::assert_snapshot!("full_config_hand_drawn", hand_drawn_formatted);
+    insta::assert_snapshot!("full_config_hand_drawn", hand_drawn_main);
+}
+
+#[test]
+fn test_config_full_configuration_multiple_content() {
+    BUILD_FULL_CONFIG.call_once(|| {
+        build_book("test-book-full-config");
+    });
+    let output = output_dir().join("test-book-full-config");
+    assert!(output.exists(), "Output directory should exist");
 
     let multiple_content = fs::read_to_string(output.join("multiple_diagrams.html"))
         .expect("Failed to read multiple_diagrams.html");
+    let content = extract_main_content(&multiple_content);
+    let content = Oxfmt::format(content).expect("Failed to format svg");
 
-    let svg_count = multiple_content.matches("<svg").count();
+    let svg_count = content.matches("<svg").count();
+    assert_eq!(svg_count, 5);
     assert!(
-        svg_count >= 5,
-        "Should contain at least 5 SVG diagrams, found {svg_count}"
-    );
-    assert!(
-        multiple_content.contains("flowchart") || multiple_content.contains("graph"),
+        content.contains("flowchart") || multiple_content.contains("graph"),
         "Should contain flowchart/graph diagram"
     );
     assert!(
-        multiple_content.contains("sequenceDiagram") || multiple_content.contains("sequence"),
+        content.contains("sequenceDiagram") || multiple_content.contains("sequence"),
         "Should contain sequence diagram"
     );
 
-    let multiple_main = extract_main_content(&multiple_content);
-    let multiple_formatted = Oxfmt::format(multiple_main).expect("Failed to format svg");
-    insta::assert_snapshot!("full_config_multiple_diagrams", multiple_formatted);
+    insta::assert_snapshot!("full_config_multiple_diagrams", content);
 }
 
 #[test]
