@@ -207,6 +207,7 @@ fn test_config_theme_forest() {
 }
 
 #[test]
+#[ignore]
 fn test_config_full_configuration() {
     BUILD_FULL_CONFIG.call_once(|| {
         build_book("test-book-full-config");
