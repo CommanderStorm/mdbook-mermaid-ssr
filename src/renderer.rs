@@ -111,7 +111,7 @@ pub struct Oxfmt;
 impl Oxfmt {
     pub fn format(input: impl AsRef<str>) -> anyhow::Result<String> {
         let result = Command::new("npx")
-            .arg("oxfmt@latest")
+            .arg("oxfmt")
             .arg("--stdin-filepath")
             .arg("snapshot.html")
             .stdin(std::process::Stdio::piped())
