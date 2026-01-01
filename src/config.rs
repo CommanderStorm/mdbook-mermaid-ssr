@@ -6,7 +6,7 @@ pub const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);
 
 /// Configuration for the mermaid-ssr preprocessor
 #[derive(Debug, Clone, Deserialize)]
-#[serde(rename_all = "kebab-case")]
+#[serde(rename_all(serialize = "camelCase", deserialize = "kebab-case"))]
 pub struct Config {
     /// Timeout for rendering operations in milliseconds
     #[serde(default = "default_timeout", with = "humantime_serde")]
@@ -42,13 +42,13 @@ fn default_timeout() -> Duration {
 /// Mermaid initialization options
 /// See: https://mermaid.js.org/config/setup/modules/mermaidAPI.html#mermaidapi-configuration-defaults
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
-#[serde(rename_all(deserialize = "camelCase"))]
+#[serde(rename_all(serialize = "camelCase", deserialize = "kebab-case"))]
 pub struct MermaidConfig {
-    #[serde(rename(deserialize = "security-level", serialize = "securityLevel"))]
+    #[serde(default)]
     pub security_level: SecurityLevel,
 
     /// Always false for SSR - we control rendering
-    #[serde(skip_deserializing, rename = "startOnLoad")]
+    #[serde(default)]
     pub start_on_load: bool,
 
     /// Additional mermaid configuration options
@@ -57,7 +57,7 @@ pub struct MermaidConfig {
 }
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
+#[serde(rename_all(serialize = "camelCase", deserialize = "kebab-case"))]
 pub enum SecurityLevel {
     /// HTML tags in the text are encoded and click functionality is disabled.
     #[default]
@@ -65,7 +65,7 @@ pub enum SecurityLevel {
     /// HTML tags in text are allowed and click functionality is enabled.
     Loose,
     /// HTML tags in text are allowed (only script elements are removed), and click functionality is enabled.
-    AntiScript,
+    Antiscript,
     /// With this security level, all rendering takes place in a sandboxed iframe. This prevent any JavaScript from running in the context. This may hinder interactive functionality of the diagram, like scripts, popups in the sequence diagram, or links to other tabs or targets, etc.
     Sandbox,
 }
@@ -118,12 +118,12 @@ window.render = async function(id, code) {{
 
 /// How to handle rendering errors
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
+#[serde(rename_all(serialize = "camelCase", deserialize = "kebab-case"))]
 pub enum ErrorHandling {
-    /// Fail the build on rendering errors
+    /// Fail the build on rendering errors (default)
     #[default]
     Fail,
-    /// Emit HTML comments on rendering errors (default)
+    /// Emit HTML comments on rendering errors
     Comment,
 }
 
@@ -191,7 +191,7 @@ mod tests {
     #[test]
     fn test_build_init_script_with_security_level() {
         let mut config = Config::default();
-        config.mermaid.security_level = SecurityLevel::AntiScript;
+        config.mermaid.security_level = SecurityLevel::Antiscript;
         let script = config.build_mermaid_init_script();
         insta::assert_snapshot!(script, @r#"
         mermaid.initialize({"securityLevel":"antiscript","startOnLoad":false});
