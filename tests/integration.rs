@@ -1,10 +1,10 @@
 use log::info;
+use mdbook_mermaid_ssr::renderer::Oxfmt;
 use pretty_assertions::assert_ne;
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 use std::sync::Once;
-use mdbook_mermaid_ssr::renderer::Oxfmt;
 
 static BUILD_BINARY_ONCE: Once = Once::new();
 static BUILD_TEST_BOOK: Once = Once::new();
