@@ -1,3 +1,5 @@
+use log::info;
+use pretty_assertions::assert_ne;
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
@@ -76,6 +78,7 @@ fn ensure_binary_built() {
 fn build_book(book_name: &str) -> PathBuf {
     ensure_binary_built();
 
+    info!("Building book {book_name}");
     // Clean previous build to ensure we test current code
     let output_dir = output_dir().join(book_name);
     if output_dir.exists() {
@@ -114,7 +117,7 @@ fn test_book_builds() {
         build_book("test-book");
     });
 
-    let output = output_dir();
+    let output = output_dir().join("test-book");
     assert!(output.exists(), "Output directory should exist");
     assert!(
         output.join("index.html").exists(),
@@ -128,7 +131,8 @@ fn test_chapter_with_mermaid() {
         build_book("test-book");
     });
 
-    let content = fs::read_to_string(output_dir().join("chapter_with_mermaid.html"))
+    let output = output_dir().join("test-book");
+    let content = fs::read_to_string(output.join("chapter_with_mermaid.html"))
         .expect("Failed to read chapter_with_mermaid.html");
 
     // Should contain mermaid-generated SVG elements (check for SVG with typical mermaid structure)
@@ -163,7 +167,8 @@ fn test_chapter_without_mermaid() {
         build_book("test-book");
     });
 
-    let content = fs::read_to_string(output_dir().join("chapter_without_mermaid.html"))
+    let output = output_dir().join("test-book");
+    let content = fs::read_to_string(output.join("chapter_without_mermaid.html"))
         .expect("Failed to read chapter_without_mermaid.html");
 
     // Should NOT contain mermaid diagrams
@@ -380,8 +385,11 @@ fn test_config_affects_svg_output() {
         .expect("Failed to read dark_theme.html");
 
     // Build default config book
-    ensure_built();
-    let default_content = fs::read_to_string(output_dir().join("chapter_with_mermaid.html"))
+    BUILD_ONCE.call_once(|| {
+        build_book("test-book");
+    });
+    let output = output_dir().join("test-book");
+    let default_content = fs::read_to_string(output.join("chapter_with_mermaid.html"))
         .expect("Failed to read default chapter");
 
     // Both should have SVG, but the configuration should affect the output
