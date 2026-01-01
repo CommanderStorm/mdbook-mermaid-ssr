@@ -83,7 +83,7 @@ impl Config {
             .ok()
             .and_then(|mut map| map.remove(NAME))
             .unwrap_or_else(|| {
-                log::debug!("No configuration found for {}. Using defaults.", NAME);
+                log::debug!("No configuration found for {NAME}. Using defaults.");
                 Config::default()
             })
     }
@@ -103,7 +103,7 @@ impl Config {
             serde_json::to_string(&mermaid_config).expect("Failed to serialize mermaid config");
 
         format!(
-            r#"mermaid.initialize({});
+            r#"mermaid.initialize({config_json});
 
 window.render = async function(id, code) {{
     try {{
@@ -113,8 +113,7 @@ window.render = async function(id, code) {{
         console.error('Mermaid rendering error:', error);
         return null;
     }}
-}};"#,
-            config_json
+}};"#
         )
     }
 }

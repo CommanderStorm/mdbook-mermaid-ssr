@@ -91,7 +91,7 @@ fn build_book(book_name: &str) -> PathBuf {
     // Add the binary directory to PATH for mdbook to find the preprocessor
     let path_env = std::env::var("PATH").unwrap_or_default();
     let binary_dir = binary_path.parent().unwrap();
-    let new_path = format!("{}:{}", binary_dir.display(), path_env);
+    let new_path = format!("{path_env}:{}", binary_dir.display());
 
     // Build the book using mdbook
     let book_dir = test_book_dir().join(book_name);
@@ -306,8 +306,7 @@ fn test_config_full_configuration() {
     let svg_count = multiple_content.matches("<svg").count();
     assert!(
         svg_count >= 5,
-        "Should contain at least 5 SVG diagrams, found {}",
-        svg_count
+        "Should contain at least 5 SVG diagrams, found {svg_count}"
     );
 
     // Verify different diagram types are present
@@ -355,8 +354,7 @@ fn test_all_diagram_types_with_config() {
     let svg_count = main_content.matches("<svg").count();
     assert!(
         svg_count >= 5,
-        "Should have at least 5 different diagram types rendered, found {}",
-        svg_count
+        "Should have at least 5 different diagram types rendered, found {svg_count}"
     );
 
     // Verify the page contains various diagram type indicators

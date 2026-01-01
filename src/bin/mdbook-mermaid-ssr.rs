@@ -55,7 +55,7 @@ fn handle_preprocessing() -> Result<(), Error> {
 
     let config = Config::from_context(&ctx);
     let preprocessor = Mermaid::new(config)
-        .map_err(|e| Error::msg(format!("Failed to initialize mermaid preprocessor: {}", e)))?;
+        .map_err(|e| Error::msg(format!("Failed to initialize mermaid preprocessor: {e}")))?;
     let processed_book = preprocessor.run(&ctx, book)?;
     serde_json::to_writer(io::stdout(), &processed_book)?;
 

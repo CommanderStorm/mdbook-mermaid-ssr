@@ -52,7 +52,7 @@ impl Mermaid {
 
         let tab = browser.new_tab()?;
         tab.set_default_timeout(config.timeout);
-        tab.navigate_to(&format!("data:text/html;charset=utf-8,{}", html_payload))?;
+        tab.navigate_to(&format!("data:text/html;charset=utf-8,{html_payload}"))?;
         // Load mermaid library
         tab.evaluate(mermaid_js, false)?;
         // Initialize mermaid with configured options and set up render function

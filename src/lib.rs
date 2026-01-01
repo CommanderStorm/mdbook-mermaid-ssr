@@ -73,9 +73,9 @@ fn add_mermaid(content: &str, renderer: &renderer::Mermaid, config: &Config) -> 
 
     let events = Parser::new_ext(content, opts);
     for (e, span) in events.into_offset_iter() {
-        log::debug!("e={:?}, span={:?}", e, span);
-        if let Event::Start(Tag::CodeBlock(Fenced(code))) = e.clone() {
-            if &*code == "mermaid" {
+        log::trace!("e={e:?}, span={span:?}");
+        if let Event::Start(Tag::CodeBlock(Fenced(code))) = e {
+            if code.as_ref() == "mermaid" {
                 in_mermaid_block = true;
                 mermaid_content.clear();
             }
@@ -107,14 +107,12 @@ fn add_mermaid(content: &str, renderer: &renderer::Mermaid, config: &Config) -> 
             // Render to SVG directly using SSR
             let mermaid_code = match renderer.render(mermaid_content) {
                 Ok(svg) => {
-                    log::debug!("Successfully rendered mermaid diagram to SVG");
-                    format!("{}\n\n", svg)
+                    log::info!("Successfully rendered mermaid diagram to SVG");
+                    format!("{svg}\n\n")
                 }
                 Err(e) => {
                     log::error!(
-                        "Failed to render mermaid diagram: {}. Content: {}",
-                        e,
-                        mermaid_content
+                        "Failed to render mermaid diagram: {e}. Content: {mermaid_content}"
                     );
 
                     // Handle error based on configuration
@@ -123,10 +121,27 @@ fn add_mermaid(content: &str, renderer: &renderer::Mermaid, config: &Config) -> 
                             return Err(e);
                         }
                         ErrorHandling::Comment => {
-                            // Return error as comment in HTML
+                            let mermaid_code = mermaid_content
+                                .replace("```", "``\\`")
+                                .lines()
+                                .collect::<Vec<_>>()
+                                .join("\n> ");
                             format!(
-                                "<!-- Mermaid rendering error: {} -->\n<pre class=\"mermaid-error\">Error rendering diagram</pre>\n\n",
-                                e
+                                r#"> [!IMPORTANT]
+> **Mermaid diagram rendering failed during SSR.**
+> *You are seeing this message because the `on-error: comment` option is enabled.*
+>
+> Error:
+> `{e}`
+>
+> Raw diagram:
+> ```raw
+> {mermaid_code}
+> ```
+>
+> To fix this issue, please follow these steps:
+> - Check your Mermaid code for any syntax errors by pasting it into the [Mermaid Playground](https://mermaid.live/).
+> - Look at the stdout log produced during mdbook build for more details"#,
                             )
                         }
                     }
@@ -142,7 +157,7 @@ fn add_mermaid(content: &str, renderer: &renderer::Mermaid, config: &Config) -> 
     for (span, block) in mermaid_blocks.iter().rev() {
         let pre_content = &content[0..span.start];
         let post_content = &content[span.end..];
-        content = format!("{}\n{}{}", pre_content, block, post_content);
+        content = format!("{pre_content}\n{block}{post_content}");
     }
     Ok(content)
 }
