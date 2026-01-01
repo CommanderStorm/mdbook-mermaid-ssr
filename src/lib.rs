@@ -378,6 +378,6 @@ A --> B
         );
         let output = result.unwrap();
         assert!(output.contains("[!IMPORTANT]"));
-        assert!(output.contains("Mermaid rendering error"));
+        assert!(output.contains("Mermaid diagram rendering failed during SSR"));
     }
 }
