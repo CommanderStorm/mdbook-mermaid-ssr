@@ -10,5 +10,7 @@
   "dependencies": {
     "mermaid": "11.12.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "oxfmt": "0.21.0"
+  }
 }
