@@ -9,9 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.0](https://github.com/CommanderStorm/mdbook-mermaid-ssr/compare/v0.2.0...v0.3.0) - 2026-01-02
 
-### Other
+### Configuration
 
-- configurable timeouts and options ([#38](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/38))
+This PR makes configuring the mermaid options, timeouts and a few other options possible.
+Please see our readme for how to do this. ([#38](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/38))
+
+### Others
+
 - *(ci)* Bless on a PR being labeled `bless` ([#45](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/45))
 - add a finishing job to the security workflow ([#43](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/43))
 - gitignore all books ([#42](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/42))
