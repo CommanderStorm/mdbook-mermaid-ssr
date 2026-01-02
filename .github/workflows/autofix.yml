@@ -5,10 +5,17 @@ on:
   push:
     branches: [main]
   pull_request:
+    types: [opened, synchronize, reopened, labeled]
 
 jobs:
   autofix:
     runs-on: ubuntu-latest
+    # Run on
+    # - push to main,
+    # - PR open/sync/reopen events, and when 'bless' label is added
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'labeled') || (github.event_name == 'pull_request' && github.event.action == 'labeled' && github.event.label.name == 'bless')
+    env:
+      SHOULD_BLESS: ${{ github.event_name == 'pull_request' && github.event.action == 'labeled' && github.event.label.name == 'bless' }}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with: { persist-credentials: false }
@@ -34,14 +41,15 @@ jobs:
           fi
 
       # fix changes coming from the new mermaid.js doing things differently
+      # OR run cargo insta blessing when 'bless' label is present
       - uses: taiki-e/install-action@e0db384ad69f5ba2c6dd0129d8934e0d0ba465c1 # v2.65.10
-        if: steps.mermaid_check.outputs.changed == 'true'
-        with: { tool: mdbook,cargo-insta }
-      - name: install integration test browser depedencency
-        if: steps.mermaid_check.outputs.changed == 'true'
+        if: steps.mermaid_check.outputs.changed == 'true' || env.SHOULD_BLESS == 'true'
+        with: { tool: "mdbook,cargo-insta" }
+      - name: install integration test browser dependency
+        if: steps.mermaid_check.outputs.changed == 'true' || env.SHOULD_BLESS == 'true'
         uses: browser-actions/setup-chrome@b94431e051d1c52dcbe9a7092a4f10f827795416 # v2.1.0
       - name: Update integration test snapshots
-        if: steps.mermaid_check.outputs.changed == 'true'
+        if: steps.mermaid_check.outputs.changed == 'true' || env.SHOULD_BLESS == 'true'
         run: cargo insta test --accept --unreferenced=delete --all
         env:
           INSTA_FORCE_PASS: 1
