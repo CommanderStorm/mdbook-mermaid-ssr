@@ -2,25 +2,30 @@
 source: tests/integration.rs
 expression: formatted
 ---
-<h1 id="test-chapter"><a class="header" href="#test-chapter">Test Chapter</a></h1>
-<p>This is a test chapter with a Mermaid diagram.</p>
+<h1 id="chapter-with-invalid-mermaid">
+  <a class="header" href="#chapter-with-invalid-mermaid">Chapter with Invalid Mermaid</a>
+</h1>
+<p>This chapter contains intentionally invalid Mermaid syntax to test error handling.</p>
+<h2 id="valid-diagram-first">
+  <a class="header" href="#valid-diagram-first">Valid Diagram First</a>
+</h2>
 <p>
   <svg
-    id="mermaid-diagram-14573355748557938183"
+    id="mermaid-diagram-17954221305543279016"
     width="100%"
     xmlns="http://www.w3.org/2000/svg"
     class="flowchart"
-    style="max-width: 237.59375px;"
-    viewbox="0 0 237.59375 363.359375"
+    style="max-width: 136.46875px;"
+    viewbox="0 0 136.46875 174"
     role="graphics-document document"
     aria-roledescription="flowchart-v2"
   >
     <style>
-      #mermaid-diagram-14573355748557938183{font-family:“trebuchet ms”,verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#mermaid-diagram-14573355748557938183 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#mermaid-diagram-14573355748557938183 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#mermaid-diagram-14573355748557938183 .error-icon{fill:#552222;}#mermaid-diagram-14573355748557938183 .error-text{fill:#552222;stroke:#552222;}#mermaid-diagram-14573355748557938183 .edge-thickness-normal{stroke-width:1px;}#mermaid-diagram-14573355748557938183 .edge-thickness-thick{stroke-width:3.5px;}#mermaid-diagram-14573355748557938183 .edge-pattern-solid{stroke-dasharray:0;}#mermaid-diagram-14573355748557938183 .edge-thickness-invisible{stroke-width:0;fill:none;}#mermaid-diagram-14573355748557938183 .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-diagram-14573355748557938183 .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-diagram-14573355748557938183 .marker{fill:#333333;stroke:#333333;}#mermaid-diagram-14573355748557938183 .marker.cross{stroke:#333333;}#mermaid-diagram-14573355748557938183 svg{font-family:“trebuchet ms”,verdana,arial,sans-serif;font-size:16px;}#mermaid-diagram-14573355748557938183 p{margin:0;}#mermaid-diagram-14573355748557938183 .label{font-family:“trebuchet ms”,verdana,arial,sans-serif;color:#333;}#mermaid-diagram-14573355748557938183 .cluster-label text{fill:#333;}#mermaid-diagram-14573355748557938183 .cluster-label span{color:#333;}#mermaid-diagram-14573355748557938183 .cluster-label span p{background-color:transparent;}#mermaid-diagram-14573355748557938183 .label text,#mermaid-diagram-14573355748557938183 span{fill:#333;color:#333;}#mermaid-diagram-14573355748557938183 .node rect,#mermaid-diagram-14573355748557938183 .node circle,#mermaid-diagram-14573355748557938183 .node ellipse,#mermaid-diagram-14573355748557938183 .node polygon,#mermaid-diagram-14573355748557938183 .node path{fill:#ECECFF;stroke:#9370DB;stroke-width:1px;}#mermaid-diagram-14573355748557938183 .rough-node .label text,#mermaid-diagram-14573355748557938183 .node .label text,#mermaid-diagram-14573355748557938183 .image-shape .label,#mermaid-diagram-14573355748557938183 .icon-shape .label{text-anchor:middle;}#mermaid-diagram-14573355748557938183 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#mermaid-diagram-14573355748557938183 .rough-node .label,#mermaid-diagram-14573355748557938183 .node .label,#mermaid-diagram-14573355748557938183 .image-shape .label,#mermaid-diagram-14573355748557938183 .icon-shape .label{text-align:center;}#mermaid-diagram-14573355748557938183 .node.clickable{cursor:pointer;}#mermaid-diagram-14573355748557938183 .root .anchor path{fill:#333333!important;stroke-width:0;stroke:#333333;}#mermaid-diagram-14573355748557938183 .arrowheadPath{fill:#333333;}#mermaid-diagram-14573355748557938183 .edgePath .path{stroke:#333333;stroke-width:2.0px;}#mermaid-diagram-14573355748557938183 .flowchart-link{stroke:#333333;fill:none;}#mermaid-diagram-14573355748557938183 .edgeLabel{background-color:rgba(232,232,232, 0.8);text-align:center;}#mermaid-diagram-14573355748557938183 .edgeLabel p{background-color:rgba(232,232,232, 0.8);}#mermaid-diagram-14573355748557938183 .edgeLabel rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#mermaid-diagram-14573355748557938183 .labelBkg{background-color:rgba(232, 232, 232, 0.5);}#mermaid-diagram-14573355748557938183 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px;}#mermaid-diagram-14573355748557938183 .cluster text{fill:#333;}#mermaid-diagram-14573355748557938183 .cluster span{color:#333;}#mermaid-diagram-14573355748557938183 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:“trebuchet ms”,verdana,arial,sans-serif;font-size:12px;background:hsl(80, 100%, 96.2745098039%);border:1px solid #aaaa33;border-radius:2px;pointer-events:none;z-index:100;}#mermaid-diagram-14573355748557938183 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#333;}#mermaid-diagram-14573355748557938183 rect.text{fill:none;stroke-width:0;}#mermaid-diagram-14573355748557938183 .icon-shape,#mermaid-diagram-14573355748557938183 .image-shape{background-color:rgba(232,232,232, 0.8);text-align:center;}#mermaid-diagram-14573355748557938183 .icon-shape p,#mermaid-diagram-14573355748557938183 .image-shape p{background-color:rgba(232,232,232, 0.8);padding:2px;}#mermaid-diagram-14573355748557938183 .icon-shape rect,#mermaid-diagram-14573355748557938183 .image-shape rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#mermaid-diagram-14573355748557938183 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#mermaid-diagram-14573355748557938183 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#mermaid-diagram-14573355748557938183 :root{–mermaid-font-family:“trebuchet ms”,verdana,arial,sans-serif;}
+      #mermaid-diagram-17954221305543279016{font-family:“trebuchet ms”,verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#mermaid-diagram-17954221305543279016 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#mermaid-diagram-17954221305543279016 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#mermaid-diagram-17954221305543279016 .error-icon{fill:#552222;}#mermaid-diagram-17954221305543279016 .error-text{fill:#552222;stroke:#552222;}#mermaid-diagram-17954221305543279016 .edge-thickness-normal{stroke-width:1px;}#mermaid-diagram-17954221305543279016 .edge-thickness-thick{stroke-width:3.5px;}#mermaid-diagram-17954221305543279016 .edge-pattern-solid{stroke-dasharray:0;}#mermaid-diagram-17954221305543279016 .edge-thickness-invisible{stroke-width:0;fill:none;}#mermaid-diagram-17954221305543279016 .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-diagram-17954221305543279016 .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-diagram-17954221305543279016 .marker{fill:#333333;stroke:#333333;}#mermaid-diagram-17954221305543279016 .marker.cross{stroke:#333333;}#mermaid-diagram-17954221305543279016 svg{font-family:“trebuchet ms”,verdana,arial,sans-serif;font-size:16px;}#mermaid-diagram-17954221305543279016 p{margin:0;}#mermaid-diagram-17954221305543279016 .label{font-family:“trebuchet ms”,verdana,arial,sans-serif;color:#333;}#mermaid-diagram-17954221305543279016 .cluster-label text{fill:#333;}#mermaid-diagram-17954221305543279016 .cluster-label span{color:#333;}#mermaid-diagram-17954221305543279016 .cluster-label span p{background-color:transparent;}#mermaid-diagram-17954221305543279016 .label text,#mermaid-diagram-17954221305543279016 span{fill:#333;color:#333;}#mermaid-diagram-17954221305543279016 .node rect,#mermaid-diagram-17954221305543279016 .node circle,#mermaid-diagram-17954221305543279016 .node ellipse,#mermaid-diagram-17954221305543279016 .node polygon,#mermaid-diagram-17954221305543279016 .node path{fill:#ECECFF;stroke:#9370DB;stroke-width:1px;}#mermaid-diagram-17954221305543279016 .rough-node .label text,#mermaid-diagram-17954221305543279016 .node .label text,#mermaid-diagram-17954221305543279016 .image-shape .label,#mermaid-diagram-17954221305543279016 .icon-shape .label{text-anchor:middle;}#mermaid-diagram-17954221305543279016 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#mermaid-diagram-17954221305543279016 .rough-node .label,#mermaid-diagram-17954221305543279016 .node .label,#mermaid-diagram-17954221305543279016 .image-shape .label,#mermaid-diagram-17954221305543279016 .icon-shape .label{text-align:center;}#mermaid-diagram-17954221305543279016 .node.clickable{cursor:pointer;}#mermaid-diagram-17954221305543279016 .root .anchor path{fill:#333333!important;stroke-width:0;stroke:#333333;}#mermaid-diagram-17954221305543279016 .arrowheadPath{fill:#333333;}#mermaid-diagram-17954221305543279016 .edgePath .path{stroke:#333333;stroke-width:2.0px;}#mermaid-diagram-17954221305543279016 .flowchart-link{stroke:#333333;fill:none;}#mermaid-diagram-17954221305543279016 .edgeLabel{background-color:rgba(232,232,232, 0.8);text-align:center;}#mermaid-diagram-17954221305543279016 .edgeLabel p{background-color:rgba(232,232,232, 0.8);}#mermaid-diagram-17954221305543279016 .edgeLabel rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#mermaid-diagram-17954221305543279016 .labelBkg{background-color:rgba(232, 232, 232, 0.5);}#mermaid-diagram-17954221305543279016 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px;}#mermaid-diagram-17954221305543279016 .cluster text{fill:#333;}#mermaid-diagram-17954221305543279016 .cluster span{color:#333;}#mermaid-diagram-17954221305543279016 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:“trebuchet ms”,verdana,arial,sans-serif;font-size:12px;background:hsl(80, 100%, 96.2745098039%);border:1px solid #aaaa33;border-radius:2px;pointer-events:none;z-index:100;}#mermaid-diagram-17954221305543279016 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#333;}#mermaid-diagram-17954221305543279016 rect.text{fill:none;stroke-width:0;}#mermaid-diagram-17954221305543279016 .icon-shape,#mermaid-diagram-17954221305543279016 .image-shape{background-color:rgba(232,232,232, 0.8);text-align:center;}#mermaid-diagram-17954221305543279016 .icon-shape p,#mermaid-diagram-17954221305543279016 .image-shape p{background-color:rgba(232,232,232, 0.8);padding:2px;}#mermaid-diagram-17954221305543279016 .icon-shape rect,#mermaid-diagram-17954221305543279016 .image-shape rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#mermaid-diagram-17954221305543279016 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#mermaid-diagram-17954221305543279016 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#mermaid-diagram-17954221305543279016 :root{–mermaid-font-family:“trebuchet ms”,verdana,arial,sans-serif;}
     </style>
     <g>
       <marker
-        id="mermaid-diagram-14573355748557938183_flowchart-v2-pointEnd"
+        id="mermaid-diagram-17954221305543279016_flowchart-v2-pointEnd"
         class="marker flowchart-v2"
         viewbox="0 0 10 10"
         refx="5"
@@ -37,7 +42,7 @@ expression: formatted
         ></path>
       </marker>
       <marker
-        id="mermaid-diagram-14573355748557938183_flowchart-v2-pointStart"
+        id="mermaid-diagram-17954221305543279016_flowchart-v2-pointStart"
         class="marker flowchart-v2"
         viewbox="0 0 10 10"
         refx="4.5"
@@ -54,7 +59,7 @@ expression: formatted
         ></path>
       </marker>
       <marker
-        id="mermaid-diagram-14573355748557938183_flowchart-v2-circleEnd"
+        id="mermaid-diagram-17954221305543279016_flowchart-v2-circleEnd"
         class="marker flowchart-v2"
         viewbox="0 0 10 10"
         refx="11"
@@ -73,7 +78,7 @@ expression: formatted
         ></circle>
       </marker>
       <marker
-        id="mermaid-diagram-14573355748557938183_flowchart-v2-circleStart"
+        id="mermaid-diagram-17954221305543279016_flowchart-v2-circleStart"
         class="marker flowchart-v2"
         viewbox="0 0 10 10"
         refx="-1"
@@ -92,7 +97,7 @@ expression: formatted
         ></circle>
       </marker>
       <marker
-        id="mermaid-diagram-14573355748557938183_flowchart-v2-crossEnd"
+        id="mermaid-diagram-17954221305543279016_flowchart-v2-crossEnd"
         class="marker cross flowchart-v2"
         viewbox="0 0 11 11"
         refx="12"
@@ -109,7 +114,7 @@ expression: formatted
         ></path>
       </marker>
       <marker
-        id="mermaid-diagram-14573355748557938183_flowchart-v2-crossStart"
+        id="mermaid-diagram-17954221305543279016_flowchart-v2-crossStart"
         class="marker cross flowchart-v2"
         viewbox="0 0 11 11"
         refx="-1"
@@ -129,37 +134,15 @@ expression: formatted
         <g class="clusters"></g>
         <g class="edgePaths">
           <path
-            d="M117.461,62L117.461,66.167C117.461,70.333,117.461,78.667,117.461,86.333C117.461,94,117.461,101,117.461,104.5L117.461,108"
+            d="M68.234,62L68.234,66.167C68.234,70.333,68.234,78.667,68.234,86.333C68.234,94,68.234,101,68.234,104.5L68.234,108"
             id="L_A_B_0"
             class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link"
             style=";"
             data-edge="true"
             data-et="edge"
             data-id="L_A_B_0"
-            data-points="W3sieCI6MTE3LjQ2MDkzNzUsInkiOjYyfSx7IngiOjExNy40NjA5Mzc1LCJ5Ijo4N30seyJ4IjoxMTcuNDYwOTM3NSwieSI6MTEyfV0="
-            marker-end="url(#mermaid-diagram-14573355748557938183_flowchart-v2-pointEnd)"
-          ></path>
-          <path
-            d="M93.372,203.27L86.07,213.452C78.769,223.633,64.166,243.996,56.864,259.678C49.563,275.359,49.563,286.359,49.563,291.859L49.563,297.359"
-            id="L_B_C_0"
-            class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link"
-            style=";"
-            data-edge="true"
-            data-et="edge"
-            data-id="L_B_C_0"
-            data-points="W3sieCI6OTMuMzcxODM3ODMzMzczMzgsInkiOjIwMy4yNzAyNzUzMzMzNzMzOH0seyJ4Ijo0OS41NjI1LCJ5IjoyNjQuMzU5Mzc1fSx7IngiOjQ5LjU2MjUsInkiOjMwMS4zNTkzNzV9XQ=="
-            marker-end="url(#mermaid-diagram-14573355748557938183_flowchart-v2-pointEnd)"
-          ></path>
-          <path
-            d="M141.55,203.27L148.852,213.452C156.153,223.633,170.756,243.996,178.058,259.678C185.359,275.359,185.359,286.359,185.359,291.859L185.359,297.359"
-            id="L_B_D_0"
-            class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link"
-            style=";"
-            data-edge="true"
-            data-et="edge"
-            data-id="L_B_D_0"
-            data-points="W3sieCI6MTQxLjU1MDAzNzE2NjYyNjYyLCJ5IjoyMDMuMjcwMjc1MzMzMzczMzh9LHsieCI6MTg1LjM1OTM3NSwieSI6MjY0LjM1OTM3NX0seyJ4IjoxODUuMzU5Mzc1LCJ5IjozMDEuMzU5Mzc1fV0="
-            marker-end="url(#mermaid-diagram-14573355748557938183_flowchart-v2-pointEnd)"
+            data-points="W3sieCI6NjguMjM0Mzc1LCJ5Ijo2Mn0seyJ4Ijo2OC4yMzQzNzUsInkiOjg3fSx7IngiOjY4LjIzNDM3NSwieSI6MTEyfV0="
+            marker-end="url(#mermaid-diagram-17954221305543279016_flowchart-v2-pointEnd)"
           ></path>
         </g>
         <g class="edgeLabels">
@@ -176,126 +159,49 @@ expression: formatted
               </foreignobject>
             </g>
           </g>
-          <g class="edgeLabel" transform="translate(49.5625, 264.359375)">
-            <g class="label" data-id="L_B_C_0" transform="translate(-13.0546875, -12)">
-              <foreignobject width="26.109375" height="24">
-                <div
-                  xmlns="http://www.w3.org/1999/xhtml"
-                  class="labelBkg"
-                  style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"
-                >
-                  <span class="edgeLabel">
-                    <p>Yes</p>
-                  </span>
-                </div>
-              </foreignobject>
-            </g>
-          </g>
-          <g class="edgeLabel" transform="translate(185.359375, 264.359375)">
-            <g class="label" data-id="L_B_D_0" transform="translate(-10.2265625, -12)">
-              <foreignobject width="20.453125" height="24">
-                <div
-                  xmlns="http://www.w3.org/1999/xhtml"
-                  class="labelBkg"
-                  style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"
-                >
-                  <span class="edgeLabel">
-                    <p>No</p>
-                  </span>
-                </div>
-              </foreignobject>
-            </g>
-          </g>
         </g>
         <g class="nodes">
-          <g class="node default" id="flowchart-A-0" transform="translate(117.4609375, 35)">
+          <g class="node default" id="flowchart-A-0" transform="translate(68.234375, 35)">
             <rect
               class="basic label-container"
               style=""
-              x="-46.8984375"
+              x="-47.1953125"
               y="-27"
-              width="93.796875"
+              width="94.390625"
               height="54"
             ></rect>
-            <g class="label" style="" transform="translate(-16.8984375, -12)">
+            <g class="label" style="" transform="translate(-17.1953125, -12)">
               <rect></rect>
-              <foreignobject width="33.796875" height="24">
+              <foreignobject width="34.390625" height="24">
                 <div
                   xmlns="http://www.w3.org/1999/xhtml"
                   style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"
                 >
                   <span class="nodeLabel">
-                    <p>Start</p>
+                    <p>Valid</p>
                   </span>
                 </div>
               </foreignobject>
             </g>
           </g>
-          <g
-            class="node default"
-            id="flowchart-B-1"
-            transform="translate(117.4609375, 169.6796875)"
-          >
-            <polygon
-              points="57.6796875,0 115.359375,-57.6796875 57.6796875,-115.359375 0,-57.6796875"
-              class="label-container"
-              transform="translate(-57.1796875, 57.6796875)"
-            ></polygon>
-            <g class="label" style="" transform="translate(-30.6796875, -12)">
-              <rect></rect>
-              <foreignobject width="61.359375" height="24">
-                <div
-                  xmlns="http://www.w3.org/1999/xhtml"
-                  style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"
-                >
-                  <span class="nodeLabel">
-                    <p>Decision</p>
-                  </span>
-                </div>
-              </foreignobject>
-            </g>
-          </g>
-          <g class="node default" id="flowchart-C-3" transform="translate(49.5625, 328.359375)">
+          <g class="node default" id="flowchart-B-1" transform="translate(68.234375, 139)">
             <rect
               class="basic label-container"
               style=""
-              x="-41.5625"
+              x="-60.234375"
               y="-27"
-              width="83.125"
+              width="120.46875"
               height="54"
             ></rect>
-            <g class="label" style="" transform="translate(-11.5625, -12)">
+            <g class="label" style="" transform="translate(-30.234375, -12)">
               <rect></rect>
-              <foreignobject width="23.125" height="24">
+              <foreignobject width="60.46875" height="24">
                 <div
                   xmlns="http://www.w3.org/1999/xhtml"
                   style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"
                 >
                   <span class="nodeLabel">
-                    <p>OK</p>
-                  </span>
-                </div>
-              </foreignobject>
-            </g>
-          </g>
-          <g class="node default" id="flowchart-D-5" transform="translate(185.359375, 328.359375)">
-            <rect
-              class="basic label-container"
-              style=""
-              x="-44.234375"
-              y="-27"
-              width="88.46875"
-              height="54"
-            ></rect>
-            <g class="label" style="" transform="translate(-14.234375, -12)">
-              <rect></rect>
-              <foreignobject width="28.46875" height="24">
-                <div
-                  xmlns="http://www.w3.org/1999/xhtml"
-                  style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"
-                >
-                  <span class="nodeLabel">
-                    <p>End</p>
+                    <p>Diagram</p>
                   </span>
                 </div>
               </foreignobject>
@@ -306,20 +212,58 @@ expression: formatted
     </g>
   </svg>
 </p>
-<p>Some text after the diagram.</p>
+<h2 id="invalid-diagram"><a class="header" href="#invalid-diagram">Invalid Diagram</a></h2>
+<p>The following diagram has invalid syntax that should trigger an error:</p>
+<blockquote class="blockquote-tag blockquote-tag-important">
+  <p class="blockquote-tag-title">
+    <svg viewbox="0 0 16 16" width="18" height="18">
+      <path
+        d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"
+      ></path></svg
+    >Important
+  </p>
+  <p><strong>Mermaid diagram rendering failed during SSR because:</strong></p>
+  <pre><code class="language-raw">Failed to compile Mermaid diagram: render returned null
+</code></pre>
+  <p>This is the diagram code that caused the error:</p>
+  <pre><code class="language-raw">graph TD
+    This is completely invalid syntax!!!
+    No arrows, no nothing
+    Just random text that mermaid cannot parse
+</code></pre>
+  <p>To fix this issue, please follow these steps:</p>
+  <ul>
+    <li>
+      Check your Mermaid code for any syntax errors by pasting it into the
+      <a href="https://mermaid.live/">Mermaid Playground</a>.
+    </li>
+    <li>Look at the stdout log produced during mdbook build for more details</li>
+  </ul>
+  <p>
+    <sub
+      ><sub
+        >You are seeing this message because the setting <code>on-error</code> is
+        <code>comment</code> and not <code>fail</code>.</sub
+      ></sub
+    >
+  </p>
+</blockquote>
+<h2 id="another-valid-diagram-after-error">
+  <a class="header" href="#another-valid-diagram-after-error">Another Valid Diagram After Error</a>
+</h2>
 <p>
   <svg
-    id="mermaid-diagram-3669913888076043475"
+    id="mermaid-diagram-9239839259418284345"
     width="100%"
     xmlns="http://www.w3.org/2000/svg"
-    style="max-width: 450px;"
-    viewbox="-50 -10 450 259"
+    style="max-width: 487px;"
+    viewbox="-50 -10 487 259"
     role="graphics-document document"
     aria-roledescription="sequence"
   >
     <g>
       <rect
-        x="200"
+        x="237"
         y="173"
         fill="#eaeaea"
         stroke="#666"
@@ -331,14 +275,14 @@ expression: formatted
         class="actor actor-bottom"
       ></rect>
       <text
-        x="275"
+        x="312"
         y="205.5"
         dominant-baseline="central"
         alignment-baseline="central"
         class="actor actor-box"
         style="text-anchor: middle; font-size: 16px; font-weight: 400;"
       >
-        <tspan x="275" dy="0">Bob</tspan>
+        <tspan x="312" dy="0">Bob</tspan>
       </text>
     </g>
     <g>
@@ -368,9 +312,9 @@ expression: formatted
     <g>
       <line
         id="actor1"
-        x1="275"
+        x1="312"
         y1="65"
-        x2="275"
+        x2="312"
         y2="173"
         class="actor-line 200"
         stroke-width="0.5px"
@@ -379,7 +323,7 @@ expression: formatted
       ></line>
       <g id="root-1">
         <rect
-          x="200"
+          x="237"
           y="0"
           fill="#eaeaea"
           stroke="#666"
@@ -391,14 +335,14 @@ expression: formatted
           class="actor actor-top"
         ></rect>
         <text
-          x="275"
+          x="312"
           y="32.5"
           dominant-baseline="central"
           alignment-baseline="central"
           class="actor actor-box"
           style="text-anchor: middle; font-size: 16px; font-weight: 400;"
         >
-          <tspan x="275" dy="0">Bob</tspan>
+          <tspan x="312" dy="0">Bob</tspan>
         </text>
       </g>
     </g>
@@ -440,7 +384,7 @@ expression: formatted
       </g>
     </g>
     <style>
-      #mermaid-diagram-3669913888076043475{font-family:“trebuchet ms”,verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#mermaid-diagram-3669913888076043475 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#mermaid-diagram-3669913888076043475 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#mermaid-diagram-3669913888076043475 .error-icon{fill:#552222;}#mermaid-diagram-3669913888076043475 .error-text{fill:#552222;stroke:#552222;}#mermaid-diagram-3669913888076043475 .edge-thickness-normal{stroke-width:1px;}#mermaid-diagram-3669913888076043475 .edge-thickness-thick{stroke-width:3.5px;}#mermaid-diagram-3669913888076043475 .edge-pattern-solid{stroke-dasharray:0;}#mermaid-diagram-3669913888076043475 .edge-thickness-invisible{stroke-width:0;fill:none;}#mermaid-diagram-3669913888076043475 .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-diagram-3669913888076043475 .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-diagram-3669913888076043475 .marker{fill:#333333;stroke:#333333;}#mermaid-diagram-3669913888076043475 .marker.cross{stroke:#333333;}#mermaid-diagram-3669913888076043475 svg{font-family:“trebuchet ms”,verdana,arial,sans-serif;font-size:16px;}#mermaid-diagram-3669913888076043475 p{margin:0;}#mermaid-diagram-3669913888076043475 .actor{stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:#ECECFF;}#mermaid-diagram-3669913888076043475 text.actor&gt;tspan{fill:black;stroke:none;}#mermaid-diagram-3669913888076043475 .actor-line{stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);}#mermaid-diagram-3669913888076043475 .innerArc{stroke-width:1.5;stroke-dasharray:none;}#mermaid-diagram-3669913888076043475 .messageLine0{stroke-width:1.5;stroke-dasharray:none;stroke:#333;}#mermaid-diagram-3669913888076043475 .messageLine1{stroke-width:1.5;stroke-dasharray:2,2;stroke:#333;}#mermaid-diagram-3669913888076043475 #arrowhead path{fill:#333;stroke:#333;}#mermaid-diagram-3669913888076043475 .sequenceNumber{fill:white;}#mermaid-diagram-3669913888076043475 #sequencenumber{fill:#333;}#mermaid-diagram-3669913888076043475 #crosshead path{fill:#333;stroke:#333;}#mermaid-diagram-3669913888076043475 .messageText{fill:#333;stroke:none;}#mermaid-diagram-3669913888076043475 .labelBox{stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:#ECECFF;}#mermaid-diagram-3669913888076043475 .labelText,#mermaid-diagram-3669913888076043475 .labelText&gt;tspan{fill:black;stroke:none;}#mermaid-diagram-3669913888076043475 .loopText,#mermaid-diagram-3669913888076043475 .loopText&gt;tspan{fill:black;stroke:none;}#mermaid-diagram-3669913888076043475 .loopLine{stroke-width:2px;stroke-dasharray:2,2;stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);}#mermaid-diagram-3669913888076043475 .note{stroke:#aaaa33;fill:#fff5ad;}#mermaid-diagram-3669913888076043475 .noteText,#mermaid-diagram-3669913888076043475 .noteText&gt;tspan{fill:black;stroke:none;}#mermaid-diagram-3669913888076043475 .activation0{fill:#f4f4f4;stroke:#666;}#mermaid-diagram-3669913888076043475 .activation1{fill:#f4f4f4;stroke:#666;}#mermaid-diagram-3669913888076043475 .activation2{fill:#f4f4f4;stroke:#666;}#mermaid-diagram-3669913888076043475 .actorPopupMenu{position:absolute;}#mermaid-diagram-3669913888076043475 .actorPopupMenuPanel{position:absolute;fill:#ECECFF;box-shadow:0px 8px 16px 0px rgba(0,0,0,0.2);filter:drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));}#mermaid-diagram-3669913888076043475 .actor-man line{stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:#ECECFF;}#mermaid-diagram-3669913888076043475 .actor-man circle,#mermaid-diagram-3669913888076043475 line{stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:#ECECFF;stroke-width:2px;}#mermaid-diagram-3669913888076043475 :root{–mermaid-font-family:“trebuchet ms”,verdana,arial,sans-serif;}
+      #mermaid-diagram-9239839259418284345{font-family:“trebuchet ms”,verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#mermaid-diagram-9239839259418284345 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#mermaid-diagram-9239839259418284345 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#mermaid-diagram-9239839259418284345 .error-icon{fill:#552222;}#mermaid-diagram-9239839259418284345 .error-text{fill:#552222;stroke:#552222;}#mermaid-diagram-9239839259418284345 .edge-thickness-normal{stroke-width:1px;}#mermaid-diagram-9239839259418284345 .edge-thickness-thick{stroke-width:3.5px;}#mermaid-diagram-9239839259418284345 .edge-pattern-solid{stroke-dasharray:0;}#mermaid-diagram-9239839259418284345 .edge-thickness-invisible{stroke-width:0;fill:none;}#mermaid-diagram-9239839259418284345 .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-diagram-9239839259418284345 .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-diagram-9239839259418284345 .marker{fill:#333333;stroke:#333333;}#mermaid-diagram-9239839259418284345 .marker.cross{stroke:#333333;}#mermaid-diagram-9239839259418284345 svg{font-family:“trebuchet ms”,verdana,arial,sans-serif;font-size:16px;}#mermaid-diagram-9239839259418284345 p{margin:0;}#mermaid-diagram-9239839259418284345 .actor{stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:#ECECFF;}#mermaid-diagram-9239839259418284345 text.actor&gt;tspan{fill:black;stroke:none;}#mermaid-diagram-9239839259418284345 .actor-line{stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);}#mermaid-diagram-9239839259418284345 .innerArc{stroke-width:1.5;stroke-dasharray:none;}#mermaid-diagram-9239839259418284345 .messageLine0{stroke-width:1.5;stroke-dasharray:none;stroke:#333;}#mermaid-diagram-9239839259418284345 .messageLine1{stroke-width:1.5;stroke-dasharray:2,2;stroke:#333;}#mermaid-diagram-9239839259418284345 #arrowhead path{fill:#333;stroke:#333;}#mermaid-diagram-9239839259418284345 .sequenceNumber{fill:white;}#mermaid-diagram-9239839259418284345 #sequencenumber{fill:#333;}#mermaid-diagram-9239839259418284345 #crosshead path{fill:#333;stroke:#333;}#mermaid-diagram-9239839259418284345 .messageText{fill:#333;stroke:none;}#mermaid-diagram-9239839259418284345 .labelBox{stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:#ECECFF;}#mermaid-diagram-9239839259418284345 .labelText,#mermaid-diagram-9239839259418284345 .labelText&gt;tspan{fill:black;stroke:none;}#mermaid-diagram-9239839259418284345 .loopText,#mermaid-diagram-9239839259418284345 .loopText&gt;tspan{fill:black;stroke:none;}#mermaid-diagram-9239839259418284345 .loopLine{stroke-width:2px;stroke-dasharray:2,2;stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);}#mermaid-diagram-9239839259418284345 .note{stroke:#aaaa33;fill:#fff5ad;}#mermaid-diagram-9239839259418284345 .noteText,#mermaid-diagram-9239839259418284345 .noteText&gt;tspan{fill:black;stroke:none;}#mermaid-diagram-9239839259418284345 .activation0{fill:#f4f4f4;stroke:#666;}#mermaid-diagram-9239839259418284345 .activation1{fill:#f4f4f4;stroke:#666;}#mermaid-diagram-9239839259418284345 .activation2{fill:#f4f4f4;stroke:#666;}#mermaid-diagram-9239839259418284345 .actorPopupMenu{position:absolute;}#mermaid-diagram-9239839259418284345 .actorPopupMenuPanel{position:absolute;fill:#ECECFF;box-shadow:0px 8px 16px 0px rgba(0,0,0,0.2);filter:drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));}#mermaid-diagram-9239839259418284345 .actor-man line{stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:#ECECFF;}#mermaid-diagram-9239839259418284345 .actor-man circle,#mermaid-diagram-9239839259418284345 line{stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:#ECECFF;stroke-width:2px;}#mermaid-diagram-9239839259418284345 :root{–mermaid-font-family:“trebuchet ms”,verdana,arial,sans-serif;}
     </style>
     <g></g>
     <defs>
@@ -516,7 +460,7 @@ expression: formatted
       </marker>
     </defs>
     <text
-      x="174"
+      x="192"
       y="80"
       text-anchor="middle"
       dominant-baseline="middle"
@@ -525,12 +469,12 @@ expression: formatted
       dy="1em"
       style="font-size: 16px; font-weight: 400;"
     >
-      Hello Bob!
+      This should still render
     </text>
     <line
       x1="76"
       y1="109"
-      x2="271"
+      x2="308"
       y2="109"
       class="messageLine0"
       stroke-width="2"
@@ -539,7 +483,7 @@ expression: formatted
       style="fill: none;"
     ></line>
     <text
-      x="177"
+      x="195"
       y="124"
       text-anchor="middle"
       dominant-baseline="middle"
@@ -548,10 +492,10 @@ expression: formatted
       dy="1em"
       style="font-size: 16px; font-weight: 400;"
     >
-      Hi Alice!
+      Even after the error above
     </text>
     <line
-      x1="274"
+      x1="311"
       y1="153"
       x2="79"
       y2="153"
@@ -563,4 +507,7 @@ expression: formatted
     ></line>
   </svg>
 </p>
-<p>And another paragraph.</p>
+<p>
+  With <code>on-error = "comment"</code>, the build should succeed and the invalid diagram should be
+  replaced with an HTML comment containing error details.
+</p>

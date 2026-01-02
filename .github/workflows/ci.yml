@@ -14,25 +14,30 @@ env:
 
 jobs:
   tests:
-    name: Build and test
+    name: Test
     runs-on: ubuntu-latest
     permissions:
       contents: read
 
     steps:
+      # system
     - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       with: { persist-credentials: false }
     - uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
       with: {toolchain: stable}
+      # depenencys
     - uses: taiki-e/install-action@e0db384ad69f5ba2c6dd0129d8934e0d0ba465c1 # v2.65.10
-      with: { tool: mdbook }
+      with: { tool: "mdbook,cargo-insta" }
     - uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
-
+    - name: Setup Node.js
+      uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+      with:
+        node-version: '24'
     - name: Install Chromium
       uses: browser-actions/setup-chrome@b94431e051d1c52dcbe9a7092a4f10f827795416 # v2.1.0
 
     - name: tests
-      run: cargo test --all
+      run: cargo insta test --all
 
   check_fmt_and_docs:
     name: Checking fmt and docs
