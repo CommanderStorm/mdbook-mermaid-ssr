@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0](https://github.com/CommanderStorm/mdbook-mermaid-ssr/compare/v0.2.0...v0.3.0) - 2026-01-02
+
+### Other
+
+- *(ci)* remove the `bless` label ([#46](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/46))
+- configurable timeouts and options ([#38](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/38))
+- *(ci)* Bless on a PR being labeled `bless` ([#45](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/45))
+- add a finishing job to the security workflow ([#43](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/43))
+- gitignore all books ([#42](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/42))
+- make sure that cargo.toml is consistently sorted ([#39](https://github.com/CommanderStorm/mdbook-mermaid-ssr/pull/39))
+
 ## [0.2.0](https://github.com/CommanderStorm/mdbook-mermaid-ssr/compare/v0.0.7...v0.0.8) - 2025-12-31
 Due to a bug in our early release CI, v0.1.0 got published.
 This bumps our version to 0.2.0. Code wise, it is identical to 0.0.7, but not 0.1.0.
