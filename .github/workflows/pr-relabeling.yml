@@ -2,6 +2,9 @@ name: Relabel Pull Request
 
 on:
   # changing a label needs permissions in the pull request target
+  # Security: This workflow is safe to run as pull_request_target because it does not
+  # check out or execute any code from the pull request. It only removes a label from
+  # the pull request using the default GITHUB_TOKEN.
   pull_request_target: # zizmor: ignore[dangerous-triggers]
     types: [labeled]
 
