@@ -1,6 +1,6 @@
 name: autofix.ci
 permissions:
-  contents: write
+  contents: read
 on:
   push:
     branches: [main]
