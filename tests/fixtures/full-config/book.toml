@@ -1,0 +1,15 @@
+[book]
+title = "Test Book with Full Configuration"
+authors = ["Test Author"]
+
+[preprocessor.mermaid-ssr]
+timeout = "45s"
+on-error = "comment"
+security-level = "loose"
+theme = "dark"
+look = "handDrawn"
+hand-drawn-seed = 0
+deterministic-ID-seed = "0"
+
+[output.html]
+search.enable = false
