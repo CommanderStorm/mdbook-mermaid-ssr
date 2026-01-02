@@ -1,6 +1,6 @@
 [package]
 name = "mdbook-mermaid-ssr"
-version = "0.2.0"
+version = "0.3.0"
 authors = [
     "Frank Elsinga <frank.elsinga@tum.de>",
     "Jan-Erik Rediger <janerik@fnordig.de>",
