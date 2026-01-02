@@ -2,7 +2,7 @@ name: Relabel Pull Request
 
 on:
   # changing a label needs permissions in the pull request target
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
     types: [labeled]
 
 permissions:
