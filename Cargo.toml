@@ -17,7 +17,7 @@ path = "src/bin/mdbook-mermaid-ssr.rs"
 
 [dependencies]
 anyhow = "1.0"
-clap = { version = "4.0.29", features = ["cargo", "derive"] }
+clap = { version = "4.5.54", features = ["cargo", "derive"] }
 env_logger = "0.11.8"
 escape_string = "0.1"
 fxhash = "0.2.1"
@@ -27,11 +27,11 @@ log = "0.4.11"
 mdbook-preprocessor = "0.5.0"
 pulldown-cmark = { version = "0.13.0", default-features = false }
 serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0.57"
+serde_json = "1.0.149"
 unescape = "0.1"
 
 [dev-dependencies]
-insta = { version = "1.45", features = ["json"] }
+insta = { version = "1.46", features = ["json"] }
 pretty_assertions = "1.4.0"
 tempfile = "3.3.0"
 toml = "0.9"
