@@ -53,7 +53,7 @@ jobs:
           show-openssf-scorecard: true
           warn-on-openssf-scorecard-level: 3
       # actions/dependency-review-action does not find all licenses -> we use cargo-deny for this in addition to dependency-review-action
-      - uses: EmbarkStudios/cargo-deny-action@76cd80eb775d7bbbd2d80292136d74d39e1b4918 # v2.0.14
+      - uses: EmbarkStudios/cargo-deny-action@3fd3802e88374d3fe9159b834c7714ec57d6c979 # v2.0.15
         with:
           command: check bans licenses sources
   codeql:
